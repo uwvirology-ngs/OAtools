@@ -36,7 +36,7 @@ assign_calls_with_key <- function(data, key_path) {
         TRUE ~ "negative"
       )
     ) |>
-    dplyr::select(-.data$all_thresh_na)
+    dplyr::select(!all_thresh_na)
 
   return(results)
 }
