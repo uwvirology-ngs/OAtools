@@ -1,3 +1,4 @@
+# basilisk environment configuration
 OAtools_env <- basilisk::BasiliskEnvironment(
   envname = "conda_env",
   pkgname = "OAtools",
