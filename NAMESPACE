@@ -2,6 +2,7 @@
 
 export(append_fit_results)
 export(assign_calls_with_key)
+export(format_results)
 export(run_fit_curve)
 export(tidy_gene_expression_data)
 importFrom(rlang,.data)
