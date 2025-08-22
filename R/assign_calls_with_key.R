@@ -29,14 +29,12 @@ assign_calls_with_key <- function(data, key_path) {
       crt_pass   = is.na(.data$crt_threshold) | (!is.na(.data$crt) & .data$crt < .data$crt_threshold),
       slope_pass = is.na(.data$slope_threshold) | .data$slope > .data$slope_threshold,
       delta_pass = is.na(.data$delta_threshold) | .data$delta > .data$delta_threshold,
-      all_thresh_na = is.na(.data$crt_threshold) & is.na(.data$slope_threshold) & is.na(.data$delta_threshold),
       result = dplyr::case_when(
-        all_thresh_na ~ "TBD",
+        is.na(.data$crt_threshold) & is.na(.data$slope_threshold) & is.na(.data$delta_threshold) ~ "TBD",
         crt_pass & slope_pass & delta_pass ~ "positive",
         TRUE ~ "negative"
       )
-    ) |>
-    dplyr::select(!all_thresh_na)
+    )
 
   return(results)
 }
