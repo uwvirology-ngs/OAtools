@@ -33,7 +33,8 @@ append_fit_results <- function(data, linear_threshold) {
   # apply wrapper function to each unique combination of well_position and batch_name
   data <- data |>
     dplyr::group_by(.data$well_position, .data$batch_name) |>
-    dplyr::group_modify(~ wrapper(.x)) |>
-    dplyr::ungroup() |>
+    dplyr::group_split() |>
+    purrr::map(wrapper) |>
+    purrr::list_rbind() |>
     dplyr::arrange(.data$well)
 }

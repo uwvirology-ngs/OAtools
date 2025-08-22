@@ -12,6 +12,7 @@ Imports:
     basilisk (>= 1.20.0),
     dplyr (>= 1.1.4),
     janitor (>= 2.2.1),
+    purrr (>= 1.1.0),
     readxl (>= 1.4.5),
     reticulate (>= 1.43.0),
     rlang (>= 1.1.6),

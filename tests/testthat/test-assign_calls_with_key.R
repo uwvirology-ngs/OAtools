@@ -1,4 +1,4 @@
-test_that("append_fit_results returns expected results", {
+test_that("assign_calls_with_key returns expected results", {
 
   # create tidy_run_data as in function documentation
   key_path = system.file("extdata", "target_threshold_key.xlsx", package = "OAtools")
