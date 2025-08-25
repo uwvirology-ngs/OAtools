@@ -7,7 +7,7 @@
 [![](https://img.shields.io/github/last-commit/uwvirology-ngs/OAtools.svg)](https://github.com/uwvirology-ngs/OAtools/commits/main)
 [![](https://img.shields.io/badge/devel%20version-0.0.0.9000-purple.svg)](https://github.com/uwvirology-ngs/OAtools)
 ![](https://img.shields.io/badge/R->=%204.5-lightblue.svg)
-
+[![R-CMD-check](https://github.com/uwvirology-ngs/OAtools/actions/workflows/R-CMD-check.yaml/badge.svg)](https://github.com/uwvirology-ngs/OAtools/actions/workflows/R-CMD-check.yaml)
 <!-- badges: end -->
 
 An R package for wrangling gene expression data generated on Thermo Fisher's OpenArray platform. OAtools streamlines every step of the data analysis pipeline, from initial loading and cleaning to reporting and communication. The motivation behind OAtools is to support the open-source and shareable analaysis of such data in research environments. 
