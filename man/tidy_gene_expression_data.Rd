@@ -19,6 +19,6 @@ This function transforms raw gene expression run data exported in .xlsx format f
 the OpenArray QuantStudio 12K Flex qPCR platform into a tidy R tibble.
 }
 \examples{
-path = system.file("extdata", "gene_expression_run_data.xlsx", package = "OAtools")
+path = system.file("extdata", "oa_gene_expression_batch1.xlsx", package = "OAtools")
 tidy_run_data <- tidy_gene_expression_data(path = path, num_results = 96)
 }

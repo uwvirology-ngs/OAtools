@@ -1,7 +1,7 @@
 test_that("tidy_gene_expression_data returns expected results", {
 
   # create tidy_run_data as in function documentation
-  path = system.file("extdata", "gene_expression_run_data.xlsx", package = "OAtools")
+  path = system.file("extdata", "oa_gene_expression_batch1.xlsx", package = "OAtools")
   result <- tidy_gene_expression_data(path = path, num_results = 96)
 
   # verify function return type

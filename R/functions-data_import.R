@@ -13,7 +13,7 @@
 #' @export
 #'
 #' @examples
-#' path = system.file("extdata", "gene_expression_run_data.xlsx", package = "OAtools")
+#' path = system.file("extdata", "oa_gene_expression_batch1.xlsx", package = "OAtools")
 #' tidy_run_data <- tidy_gene_expression_data(path = path, num_results = 96)
 tidy_gene_expression_data <- function(path, num_results = 2688) {
 
@@ -78,7 +78,7 @@ tidy_cumulative_gene_expression_data <- function(directory, num_results = 2688) 
   # generate list of files ending in 'data.xlsx'
   files <- base::list.files(
     path = directory,
-    pattern = "data\\.xlsx$",
+    pattern = "batch[0-9]+\\.xlsx$",
     full.names = TRUE,
     ignore.case = TRUE
   )
