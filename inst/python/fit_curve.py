@@ -106,8 +106,8 @@ def fit_curve(data: pd.DataFrame, linear_threshold: float) -> dict[str, Any]:
         "regression": regression_type,
         "delta": delta,
         "x_data": x_data,
-        "y_data": y_data,
-        "y_pred": y_pred,
+        "y_data": np.round(y_data, 3),
+        "y_pred": np.round(y_pred, 3),
         "coefficients": coefficients,
         "x_mid": x_mid,
         "slope": slope

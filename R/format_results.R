@@ -14,7 +14,7 @@
 #' @export
 #'
 #' @examples
-#' formatted_results <- format_results(data = result_data, include_fluorescence_data = TRUE)
+#' formatted_data <- format_results(data = result_data, include_fluorescence_data = TRUE)
 
 format_results <- function(data, include_fluorescence_data) {
 

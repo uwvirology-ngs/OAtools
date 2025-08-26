@@ -20,5 +20,5 @@ human-readable one in which each row reflects one reaction. Fluorescence data fo
 cycle may be optionally included.
 }
 \examples{
-formatted_results <- format_results(data = result_data, include_fluorescence_data = TRUE)
+formatted_data <- format_results(data = result_data, include_fluorescence_data = TRUE)
 }
