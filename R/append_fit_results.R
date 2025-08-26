@@ -44,5 +44,5 @@ append_fit_results <- function(data, linear_threshold) {
     dplyr::group_split() |>
     purrr::map(wrapper) |>
     purrr::list_rbind() |>
-    dplyr::arrange(.data$well)
+    dplyr::arrange(.data$batch_name, .data$well)
 }
