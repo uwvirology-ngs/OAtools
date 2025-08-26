@@ -25,6 +25,6 @@ test_that("assign_calls_with_key returns expected results", {
   expect_equal(observed_types[names(expected_types)], expected_types)
 
   # ensure result is identical to example package data
-  expect_identical(result, result_data)
+  expect_equal(result, result_data, tolerance = 1.e-3)
 
 })

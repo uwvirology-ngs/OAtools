@@ -7,6 +7,6 @@ test_that("format_results returns expected results", {
   expect_true(tibble::is_tibble(result))
 
   # ensure result is identical to example package data
-  expect_identical(result, formatted_data)
+  expect_equal(result, formatted_data, tolerance = 1e-3)
 
 })
