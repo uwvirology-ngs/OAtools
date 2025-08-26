@@ -13,6 +13,7 @@ Imports:
     dplyr (>= 1.1.4),
     ggplot2 (>= 3.5.2),
     janitor (>= 2.2.1),
+    plotly (>= 4.11.0),
     purrr (>= 1.1.0),
     readxl (>= 1.4.5),
     reticulate (>= 1.43.0),
