@@ -1,7 +1,9 @@
 test_that("append_fit_results returns expected results", {
 
   # create tidy_run_data as in function documentation
-  result <- append_fit_results(data = tidy_run_data, linear_threshold = 400)
+  targets <- c("S. pneumoniae_Ba06439619_s1", "RNAse_P_Pa04930436_g1")
+  data <- tidy_run_data_cumulative |> dplyr::filter(target_name %in% targets)
+  result <- append_fit_results(data = data, linear_threshold = 400)
 
   # verify function return type
   expect_true(tibble::is_tibble(result))

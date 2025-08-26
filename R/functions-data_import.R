@@ -72,7 +72,7 @@ tidy_gene_expression_data <- function(path, num_results = 2688) {
 #'
 #' @examples
 #' dir = system.file("extdata", package = "OAtools")
-#' cumulative_run_data <- tidy_cumulative_gene_expression_data(directory = dir, num_results = 96)
+#' tidy_run_data_cumulative <- tidy_cumulative_gene_expression_data(directory = dir, num_results = 96)
 tidy_cumulative_gene_expression_data <- function(directory, num_results = 2688) {
 
   # generate list of files ending in 'data.xlsx'

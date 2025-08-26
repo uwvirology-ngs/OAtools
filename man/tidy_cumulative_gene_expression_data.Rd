@@ -20,5 +20,5 @@ the OpenArray QuantStudio 12K Flex qPCR platform into a tidy R tibble.
 }
 \examples{
 dir = system.file("extdata", package = "OAtools")
-cumulative_run_data <- tidy_cumulative_gene_expression_data(directory = dir, num_results = 96)
+tidy_run_data_cumulative <- tidy_cumulative_gene_expression_data(directory = dir, num_results = 96)
 }
