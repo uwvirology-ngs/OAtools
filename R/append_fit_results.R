@@ -23,10 +23,18 @@ append_fit_results <- function(data, linear_threshold) {
   # define wrapper function to append curve-fitting results
   wrapper <- function(df) {
     result <- run_fit_curve(df, linear_threshold)
-    df$regression_type <- result$regression
-    df$x_mid <- round(result$x_mid, 3)
-    df$slope <- round(result$slope, 3)
-    df$delta <- round(result$delta, 3)
+
+    df$regression_type <- result$regression       # append model type
+
+    fam_pred <- as.numeric(result$y_pred)         # append fluorescence values predicted by model
+    if (length(fam_pred) != nrow(df)) {
+      stop("Array length returned by fit_curve() mismatches nrows in data frame passed to wrapper.")
+    }
+    df$fam_pred <- as.numeric(result$y_pred)
+
+    df$x_mid <- round(result$x_mid, 3)            # append midpoint data
+    df$slope <- round(result$slope, 3)            # append slope data
+    df$delta <- round(result$delta, 3)            # append change-in-fluorescence data
     return(df)
   }
 

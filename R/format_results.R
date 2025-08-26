@@ -15,15 +15,20 @@
 #'
 #' @examples
 #' formatted_results <- format_results(data = result_data, include_fluorescence_data = TRUE)
+
 format_results <- function(data, include_fluorescence_data) {
 
   if (include_fluorescence_data) {
+
+    fluorescence_cols <- base::intersect(c("fam", "fam_pred"), base::names(data))
+
     data <- data |>
       tidyr::pivot_wider(
         names_from = "cycle",
-        values_from = "fam",
-        names_prefix = "cycle_"
+        values_from = tidyselect::all_of(fluorescence_cols),
+        names_glue = "{.value}_cycle{cycle}"
       )
+
   } else {
     data <- data |>
       dplyr::distinct(.keep_all = TRUE) |>

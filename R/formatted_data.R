@@ -20,6 +20,7 @@
 #'   \item{amp_status}{factor storing run outcome as called by QS 12K Flex Software}
 #'   \item{batch_name}{factor storing run name associated with the plate}
 #'   \item{regression_type}{character string denoting type of regression computed for the reaction}
+#'   \item{fam_pred}{numeric value for fluorescence value predicted by model}
 #'   \item{x_mid}{numeric cycle point at which the model curve crosses the midpoint between its minimal and maximal values; set to 40 for linear models}
 #'   \item{slope}{numeric slope of the model at the x_mid cycle point}
 #'   \item{delta}{numeric value approximating total change in fluorescence over the reaction}
