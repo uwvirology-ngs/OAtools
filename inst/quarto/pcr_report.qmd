@@ -1,0 +1,15 @@
+---
+title: "OpenArray qPCR Report"
+format: html
+params:
+    data_path: NULL
+---
+
+```{r}
+print("hello")
+```
+
+```{r}
+pcr_data <- readRDS(params$data_path)
+head(pcr_data)
+```
