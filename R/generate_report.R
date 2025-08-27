@@ -1,12 +1,23 @@
+#' Generate a report
+#'
+#' Generates a .html report
+#'
+#' @param data a tibble of qPCR data ready for reporting
+#'
+#' @returns an .html report summarizing the OpenArray run results
+#'
+#' @export
+#'
+#' @examples
+#' generate_report(result_data)
 generate_report <- function(data) {
 
   data_file <- tempfile(fileext = ".rds")
   saveRDS(data, data_file)
 
-  quarto::quarto_render(
-    input = system.file("quarto", "pcr_report.qmd", package = "OAtools"),
+  rmarkdown::render(
+    input = system.file("reports", "pcr_report.rmd", package = "OAtools"),
     output_file = "report.html",
-    execute_params = list(data_path = data_file)
+    params = list(data_path = data_file)
   )
-
 }

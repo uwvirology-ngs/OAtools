@@ -1,6 +1,6 @@
 ---
 title: "OpenArray qPCR Report"
-format: html
+date: "`r Sys.Date()`"
 params:
     data_path: NULL
 ---
