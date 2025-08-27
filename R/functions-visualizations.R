@@ -46,7 +46,7 @@ plot_overview <- function(data, sample_list = NA, target_list = NA, batch = NA)
 
   # generate heatmap figure
   heatmap <- summary |>
-    ggplot2::ggplot(mapping = ggplot2::aes(x = .data$target_name, y = .data$sample_name, fill = category)) +
+    ggplot2::ggplot(mapping = ggplot2::aes(x = .data$target_name, y = .data$sample_name, fill = .data$category)) +
     ggplot2::geom_tile(color = "black") +
     ggplot2::scale_fill_manual(values = c("No Amp" = "white", "Inconclusive" = "blue", "Amp" = "green")) +
     ggplot2::theme_minimal() +
