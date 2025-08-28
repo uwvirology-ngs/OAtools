@@ -21,6 +21,7 @@ generate_report <- function(data, path) {
     input = system.file("reports", "pcr_report.rmd", package = "OAtools"),
     output_file = "report.html",
     output_dir = path,
-    params = list(data_path = data_file)
+    params = list(data_path = data_file),
+    envir = environment()
   )
 }

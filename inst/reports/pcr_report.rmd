@@ -3,7 +3,7 @@ title: "OpenArray qPCR Report"
 date: "`r Sys.Date()`"
 output: html_document
 params:
-    data_path: "run_result_data.rds"
+    data_path: "run_result_data.rds" # temporary value for development, will revert to NULL
 ---
 
 ```{r}
@@ -13,4 +13,9 @@ print("hello")
 ```{r}
 pcr_data <- readRDS(params$data_path)
 head(pcr_data)
+```
+
+```{r}
+print("plot here")
+OAtools::plot_crt(pcr_data)
 ```

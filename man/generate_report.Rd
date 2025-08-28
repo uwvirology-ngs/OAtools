@@ -4,10 +4,12 @@
 \alias{generate_report}
 \title{Generate a report}
 \usage{
-generate_report(data)
+generate_report(data, path)
 }
 \arguments{
 \item{data}{a tibble of qPCR data ready for reporting}
+
+\item{path}{intended outfile path}
 }
 \value{
 an .html report summarizing the OpenArray run results
@@ -16,5 +18,6 @@ an .html report summarizing the OpenArray run results
 Generates a .html report
 }
 \examples{
-generate_report(result_data)
+path = file.path("C:", "Users", "aidants", "Downloads")
+generate_report(result_data, path)
 }
