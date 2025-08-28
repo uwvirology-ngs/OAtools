@@ -51,3 +51,7 @@ rsconnect/
 .Rdata
 .DS_Store
 .quarto
+
+# example .rds and .html for .rmd development
+run_result_data.rds
+pcr_report.html

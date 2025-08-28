@@ -1,8 +1,9 @@
 ---
 title: "OpenArray qPCR Report"
 date: "`r Sys.Date()`"
+output: html_document
 params:
-    data_path: NULL
+    data_path: "run_result_data.rds"
 ---
 
 ```{r}
