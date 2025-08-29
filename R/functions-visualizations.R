@@ -13,7 +13,7 @@
 #'
 #' @examples
 #' fig <- plot_overview(tidy_run_data)
-plot_overview <- function(data, sample_list = NA, target_list = NA, batch = NA)
+plot_overview <- function(data, sample_list = NA, target_list = NA, batch = NA, analysis = 'native')
 {
 
   # filter by batch number if given
@@ -23,16 +23,32 @@ plot_overview <- function(data, sample_list = NA, target_list = NA, batch = NA)
   }
 
   # tabulate summary of results
-  summary <- data |>
-    dplyr::group_by(.data$sample_name, .data$target_name) |>
-    dplyr::summarize(
-      category = dplyr::case_when(
-        any(.data$amp_status == "Amp") ~ "Amp",
-        any(.data$amp_status == "Inconclusive") ~ "Inconclusive",
-        TRUE ~ "No Amp"
-      ),
-      .groups = "drop"
-    )
+  summary <- data |> dplyr::group_by(.data$sample_name, .data$target_name)
+
+  if (analysis == 'native') {
+    summary <- summary |>
+      dplyr::summarize(
+        category = dplyr::case_when(
+          any(.data$amp_status == "Amp") ~ "Positive",
+          any(.data$amp_status == "Inconclusive") ~ "Inconclusive",
+          TRUE ~ "Negative"
+        ),
+        .groups = "drop"
+      )
+  } else if (analysis == 'curve-fitting') {
+    summary <- summary |>
+      dplyr::summarize(
+        category = dplyr::case_when(
+          any(.data$result == "positive") ~ "Positive",
+          any(.data$result == "inconclusive") ~ "Inconclusive",
+          TRUE ~ "Negative"
+        ),
+        .groups = "drop"
+      )
+  } else {
+    stop("invalid analysis type")
+  }
+
 
   # complete heat map with full sample and target lists if given
   if (!is.na(sample_list[1]) & !is.na(target_list[1])) {
@@ -40,7 +56,7 @@ plot_overview <- function(data, sample_list = NA, target_list = NA, batch = NA)
       tidyr::complete(
         sample_name = sample_list,
         target_name = target_list,
-        fill = list(category = "No Amp")
+        fill = list(category = "Negative")
       )
   }
 
@@ -48,7 +64,7 @@ plot_overview <- function(data, sample_list = NA, target_list = NA, batch = NA)
   heatmap <- summary |>
     ggplot2::ggplot(mapping = ggplot2::aes(x = .data$target_name, y = .data$sample_name, fill = .data$category)) +
     ggplot2::geom_tile(color = "black") +
-    ggplot2::scale_fill_manual(values = c("No Amp" = "white", "Inconclusive" = "blue", "Amp" = "green")) +
+    ggplot2::scale_fill_manual(values = c("Negative" = "white", "Inconclusive" = "blue", "Positive" = "green")) +
     ggplot2::theme_minimal() +
     ggplot2::labs(
       title = "Amplification Status per Sample/Target Combination",
