@@ -4,6 +4,7 @@ date: "`r Sys.Date()`"
 output: html_document
 params:
     data_path: "run_result_data.rds" # temporary value for development, will revert to NULL
+    analysis: NULL
 ---
 
 ```{r include = FALSE}
@@ -40,7 +41,8 @@ for (batch in batches) {
 OAtools::plot_overview(
   data = pcr_data,
   sample_list = levels(pcr_data$sample_name),
-  target_list = levels(pcr_data$target_name)
+  target_list = levels(pcr_data$target_name),
+  analysis = analysis
 )
 ```
 
