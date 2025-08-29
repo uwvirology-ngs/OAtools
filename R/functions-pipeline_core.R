@@ -98,6 +98,9 @@ assign_calls_with_key <- function(data, key_path) {
   key <- readxl::read_excel(path = key_path, na = "NA") |>
     janitor::clean_names()
 
+  key <- key |>
+    dplyr::mutate(target = as.factor(.data$target))
+
   data <- data |>
     dplyr::left_join(key, by = c("target_name" = "target"))
 
