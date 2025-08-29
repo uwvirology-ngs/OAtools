@@ -4,7 +4,13 @@
 \alias{plot_overview}
 \title{Plot overview heat map}
 \usage{
-plot_overview(data, sample_list = NA, target_list = NA, batch = NA)
+plot_overview(
+  data,
+  sample_list = NA,
+  target_list = NA,
+  batch = NA,
+  analysis = "native"
+)
 }
 \arguments{
 \item{data}{a tibble of qPCR data; either a single batch or a cumulative tibble with the batch parameter specified}
@@ -14,6 +20,8 @@ plot_overview(data, sample_list = NA, target_list = NA, batch = NA)
 \item{target_list}{optional character list of assay targets with which to complete heat map}
 
 \item{batch}{character string for input batch for plotting}
+
+\item{analysis}{character string for analytic method, supports 'native' and 'curve-fitting' approaches}
 }
 \value{
 a ggplot2 figure

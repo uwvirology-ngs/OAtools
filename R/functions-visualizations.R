@@ -7,6 +7,7 @@
 #' @param sample_list optional character list of samples with which to complete heat map
 #' @param target_list optional character list of assay targets with which to complete heat map
 #' @param batch character string for input batch for plotting
+#' @param analysis character string for analytic method, supports 'native' and 'curve-fitting' approaches
 #'
 #' @returns a ggplot2 figure
 #' @export
