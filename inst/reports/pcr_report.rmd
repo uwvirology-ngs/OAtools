@@ -6,16 +6,33 @@ params:
     data_path: "run_result_data.rds" # temporary value for development, will revert to NULL
 ---
 
-```{r}
-print("hello")
+```{r include = FALSE}
+knitr::opts_chunk$set(echo=FALSE)
 ```
 
 ```{r}
+# load in data
 pcr_data <- readRDS(params$data_path)
-head(pcr_data)
 ```
 
-```{r}
-print("plot here")
-OAtools::plot_crt(pcr_data)
+## Graphics
+
+### Amplification Overview
+```{r, fig.width=nlevels(pcr_data$target_name)*3, fig.height=nlevels(pcr_data$sample_name)/3, fig.align='center'}
+OAtools::plot_overview(
+  data = pcr_data,
+  sample_list = levels(pcr_data$sample_name),
+  target_list = levels(pcr_data$target_name)
+)
+```
+
+### Fluroescence Curve Quality Control
+```{r, fig.align='center'}
+OAtools::plot_qc(data = pcr_data)
+```
+
+
+### Crt Distribution
+```{r, fig.height=nlevels(pcr_data$target_name), fig.align='center'}
+OAtools::plot_crt(data = pcr_data)
 ```
