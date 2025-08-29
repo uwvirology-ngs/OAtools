@@ -15,9 +15,27 @@ knitr::opts_chunk$set(echo=FALSE)
 pcr_data <- readRDS(params$data_path)
 ```
 
+## Narrative
+
+This report summarizes the results of multiplex PCR data from OpenArray gene expression runs. 
+
+### Batches
+
+```{r}
+batches <- levels(pcr_data$batch_name)
+```
+
+There are `r length(batches)` OpenArray plates included in this report. The batch names are:
+```{r}
+for (batch in batches) {
+  print(batch)
+}
+```
+
 ## Graphics
 
 ### Amplification Overview
+
 ```{r, fig.width=nlevels(pcr_data$target_name)*3, fig.height=nlevels(pcr_data$sample_name)/3, fig.align='center'}
 OAtools::plot_overview(
   data = pcr_data,
@@ -27,12 +45,13 @@ OAtools::plot_overview(
 ```
 
 ### Fluroescence Curve Quality Control
+
 ```{r, fig.align='center'}
 OAtools::plot_qc(data = pcr_data)
 ```
 
-
 ### Crt Distribution
+
 ```{r, fig.height=nlevels(pcr_data$target_name), fig.align='center'}
 OAtools::plot_crt(data = pcr_data)
 ```
