@@ -58,3 +58,4 @@ pcr_report.html
 
 # R project
 *.rproj
+inst/doc
