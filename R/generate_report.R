@@ -11,7 +11,7 @@
 #' @export
 #'
 #' @examples
-#' path = file.path("C:", "Users", "aidants", "Downloads")
+#' path = file.path("..", "reports")
 #' generate_report(result_data, path)
 generate_report <- function(data, path, analysis = 'native') {
 
