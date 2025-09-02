@@ -55,3 +55,6 @@ rsconnect/
 # example .rds and .html for .rmd development
 run_result_data.rds
 pcr_report.html
+
+# R project
+*.rproj
