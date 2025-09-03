@@ -1,19 +1,75 @@
 ---
 title: "OAtools"
-output: rmarkdown::html_vignette
+output: 
+  BiocStyle::html_document:
+    toc: true
+    toc_depth: 2
 vignette: >
-  %\VignetteIndexEntry{OAtools}
+  %\VignetteIndexEntry{1. OAtools}
   %\VignetteEngine{knitr::rmarkdown}
   %\VignetteEncoding{UTF-8}
 ---
 
-```{r, include = FALSE}
+```{r, include=FALSE}
 knitr::opts_chunk$set(
   collapse = TRUE,
   comment = "#>"
 )
 ```
 
-```{r setup}
+```{r, include=FALSE}
 library(OAtools)
 ```
+
+## Introduction
+
+Highly multiplex PCR platforms enable drastically greater throughput compared to traditional PCR methods, making them critical for pathogen detection and gene expression experiments in public health and clinical research environments. One such platform is ThermoFisher Scientific's OpenArray Technology ([ThermoFisher - OpenArray](https://www.thermofisher.com/us/en/home/life-science/pcr/real-time-pcr/real-time-openarray.html){.uri}), which our lab uses to screen patients swabs for respiratory viral infection. With 3000+ qPCR reactions taking place on each OpenArray plate, the sheer volume of data produced requires an informatics solution for downstream analyses and reporting.
+
+ThermoFisher provides the proprietary QuantStudio 12K Flex Software and the Relative Quantification Application for the data analysis. However, no open-source software exists for the wrangling and analysis of OpenArray gene expression data. To bridge the gap, OAtools streamlines the analysis process from the initial cleaning steps to communication of results through an R Markdown document. Our goal in sharing OAtools is to support open-source and shareable analyses of OpenArray gene expression data, especially in clinical research environments.
+
+## Installation
+
+To install the development version of *OAtools* directly from the uwvirology-ngs public GitHub, (<https://github.com/uwvirology-ngs/OAtools>) run the commands below in your R console:
+
+```{r eval=FALSE}
+# install OAtools from the uwvirology-ngs GitHub
+pak::pak("uwvirology-ngs/OAtools")
+```
+
+Our lab plans to share this project as a Bioconductor package. Once available, this package may be installed from Bioconductor by running the following commands in the R console:
+
+```{r eval=FALSE}
+# if needed, install Bioconductor
+if (!require("BiocManager", quietly = TRUE)) {
+  install.packages("BiocManager")
+}
+
+# install OAtools from Bioconductor
+BiocManager::install("OAtools")
+```
+
+## General Workflow
+
+### Overview
+
+*OAtools* supports two major methods of data analysis for OpenArray qPCR reactions. The first method is to carry over the relative threshold analysis native to the QuantStudio 12K Flex Software. ([ThermoFisher-OpenArray-Crt](https://documents.thermofisher.com/TFS-Assets/LSG/brochures/CO28730-Crt-Tech-note_FLR.pdf){.uri}) The second method, our open-source option, is to fit a logistic model to each fluorescence curve and categorize reactions based on the features of the model curve. In particular, *OAtools* applies the 5-parameter logistic model as it accounts for curve asymmetry, which is frequently high in qPCR curves.
+
+### Method 1 - Relative Threshold
+
+To start, load example run data included in the package and assign it to the tidy_run_data variable. Note that the num_results parameter specifies the number of rows in the 'Results' tab of the .xlsx file to load. The tidy_gene_expression_data transforms the raw data output in .xlsx format from QuantStudio 12K Flex software into a Tidyverse-friendly tibble object, which is the intended input for downstream functions.
+
+```{r}
+path = system.file("extdata", "oa_gene_expression_batch1.xlsx", package = "OAtools")
+tidy_run_data <- tidy_gene_expression_data(path = path, num_results = 96)
+```
+
+If we intend to simply carry over the relative threshold analysis relative to the instrument software, we can generate a run result report directly.
+
+```{r eval=FALSE}
+output_path = file.path(".")
+generate_report(data = tidy_run_data, path = output_path, analysis = 'native')
+```
+
+### Method 2 - Curve Fitting
+
+In the case that we
