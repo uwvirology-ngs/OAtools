@@ -10,7 +10,6 @@ Roxygen: list(markdown = TRUE)
 RoxygenNote: 7.3.2
 Imports: 
     basilisk (>= 1.20.0),
-    BiocStyle (>= 2.36.0),
     dplyr (>= 1.1.4),
     ggplot2 (>= 3.5.2),
     janitor (>= 2.2.1),
@@ -27,6 +26,7 @@ Depends:
     R (>= 4.5)
 LazyData: true
 Suggests: 
+    BiocStyle,
     knitr,
     testthat (>= 3.0.0)
 Config/testthat/edition: 3
