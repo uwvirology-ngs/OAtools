@@ -3,7 +3,7 @@ title: "OpenArray qPCR Report"
 date: "`r Sys.Date()`"
 output: html_document
 params:
-    data_path: "run_result_data.rds" # temporary value for development, will revert to NULL
+    data_path: NULL
     analysis: NULL
 ---
 
