@@ -129,3 +129,7 @@ Once calls are populated into the results column, the workflow ends as before, w
 # generate a .html report from the tidy_run_data
 generate_report(data = result_data, path = ".", analysis = 'curve-fitting')
 ```
+
+```{r sessionInfo}
+sessionInfo()
+```
