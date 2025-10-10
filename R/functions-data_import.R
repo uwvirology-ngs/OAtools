@@ -21,6 +21,11 @@ tidy_gene_expression_data <- function(path, num_results = 2688) {
   results_data <- readxl::read_excel(path, skip = 19, sheet = "Results", na = "Undetermined", n_max = num_results) |>
     dplyr::select("Well", "Well Position", "Sample Name", "Target Name", "Crt", "Amp Score", "Cq Conf", "Amp Status") |>
     janitor::clean_names()
+  
+  # throw error in case of inappropriate inclusion of metadata in tibble
+  if (!is.numeric(results_data$well)) {
+    stop("Well column is not numeric. This can often happen when the num_results parameter exceeds the number of rows of data on the 'results' tab of the input excel file.")
+  }
 
   # import multicomponent data sheet
   multicomponent_data <- readxl::read_excel(path, skip = 19, sheet = "Multicomponent Data") |>
