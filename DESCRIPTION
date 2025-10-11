@@ -24,7 +24,6 @@ Imports:
     tidyselect (>= 1.2.1)
 Depends: 
     R (>= 4.5)
-LazyData: true
 Suggests: 
     BiocStyle,
     knitr,

@@ -13,6 +13,7 @@
 #' @export
 #'
 #' @examples
+#' data(tidy_run_data)
 #' fig <- plot_overview(tidy_run_data)
 plot_overview <- function(data, sample_list = NA, target_list = NA, batch = NA, analysis = 'native')
 {
@@ -97,6 +98,7 @@ plot_overview <- function(data, sample_list = NA, target_list = NA, batch = NA, 
 #' @export
 #'
 #' @examples
+#' data(tidy_run_data)
 #' fig <- plot_qc(tidy_run_data)
 plot_qc <- function(data, batch = NA)
 {
@@ -138,6 +140,7 @@ plot_qc <- function(data, batch = NA)
 #' @export
 #'
 #' @examples
+#' data(tidy_run_data)
 #' fig <- plot_crt(tidy_run_data)
 plot_crt <- function(data, batch = NA)
 {

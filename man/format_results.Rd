@@ -20,6 +20,7 @@ human-readable one in which each row reflects one reaction. Fluorescence data fo
 cycle may be optionally included.
 }
 \examples{
+data(curve_fit_data)
 key_path = system.file("extdata", "target_threshold_key.xlsx", package = "OAtools")
 result_data <- assign_calls_with_key(data = curve_fit_data, key_path = key_path)
 formatted_data <- format_results(data = result_data, include_fluorescence_data = TRUE)

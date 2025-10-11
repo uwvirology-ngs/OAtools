@@ -19,5 +19,6 @@ This function generates a box and whisker plot visualizing the distribution of
 observed crt values for each assay target in a given run.
 }
 \examples{
+data(tidy_run_data)
 fig <- plot_crt(tidy_run_data)
 }

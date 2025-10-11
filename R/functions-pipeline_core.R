@@ -13,6 +13,7 @@ utils::globalVariables("fit_curve")
 #' @export
 #'
 #' @examples
+#' data(tidy_run_data)
 #' data <- dplyr::filter(tidy_run_data, well == 2794)
 #' curve <- run_fit_curve(data, linear_threshold = 400)
 run_fit_curve <- function(data, linear_threshold) {
@@ -43,6 +44,7 @@ run_fit_curve <- function(data, linear_threshold) {
 #' @export
 #'
 #' @examples
+#' data(tidy_run_data)
 #' filt <- tidy_run_data |> dplyr::filter(sample_name == "Sample-102")
 #' curve_fit_data <- append_fit_results(data = filt, linear_threshold = 400)
 append_fit_results <- function(data, linear_threshold) {
@@ -91,6 +93,7 @@ append_fit_results <- function(data, linear_threshold) {
 #' @export
 #'
 #' @examples
+#' data(curve_fit_data)
 #' key_path = system.file("extdata", "target_threshold_key.xlsx", package = "OAtools")
 #' result_data <- assign_calls_with_key(data = curve_fit_data, key_path = key_path)
 assign_calls_with_key <- function(data, key_path) {
@@ -134,6 +137,7 @@ assign_calls_with_key <- function(data, key_path) {
 #' @export
 #'
 #' @examples
+#' data(curve_fit_data)
 #' key_path = system.file("extdata", "target_threshold_key.xlsx", package = "OAtools")
 #' result_data <- assign_calls_with_key(data = curve_fit_data, key_path = key_path)
 #' formatted_data <- format_results(data = result_data, include_fluorescence_data = TRUE)

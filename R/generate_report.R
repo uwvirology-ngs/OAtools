@@ -11,6 +11,7 @@
 #' @export
 #'
 #' @examples
+#' data(curve_fit_data)
 #' key_path = system.file("extdata", "target_threshold_key.xlsx", package = "OAtools")
 #' result_data <- assign_calls_with_key(data = curve_fit_data, key_path = key_path)
 #' path = file.path("..", "reports")

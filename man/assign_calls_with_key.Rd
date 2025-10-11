@@ -21,6 +21,7 @@ of the model regression compare to the thresholds defined for the respective ass
 Appends these calls to the data frame and returns the modified tibble.
 }
 \examples{
+data(curve_fit_data)
 key_path = system.file("extdata", "target_threshold_key.xlsx", package = "OAtools")
 result_data <- assign_calls_with_key(data = curve_fit_data, key_path = key_path)
 }

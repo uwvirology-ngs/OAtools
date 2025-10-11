@@ -19,5 +19,6 @@ This function generates a 3-dimensional QC plot comparing the amplification stat
 crt, Cq conf, and amplification score output by QuantStudio 12K Flex software.
 }
 \examples{
+data(tidy_run_data)
 fig <- plot_qc(tidy_run_data)
 }

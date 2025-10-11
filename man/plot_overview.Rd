@@ -31,5 +31,6 @@ This function generates a heat map summarizing the amplification status results 
 technical replicates grouped by sample, assay target, and batch name.
 }
 \examples{
+data(tidy_run_data)
 fig <- plot_overview(tidy_run_data)
 }
