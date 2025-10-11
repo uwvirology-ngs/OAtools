@@ -22,17 +22,17 @@ utils::globalVariables("fit_curve")
 #' 
 #' curve <- run_fit_curve(data, linear_threshold = 400)
 run_fit_curve <- function(data, linear_threshold) {
-  basilisk::basiliskRun(
-    env = OAtools_env,
-    fun = function() {
-      reticulate::source_python(system.file(
-        "python", 
-        "fit_curve.py", 
-        package = "OAtools"
-      ))
-      return(fit_curve(data, linear_threshold))
-    }
-  )
+    basilisk::basiliskRun(
+        env = OAtools_env,
+        fun = function() {
+            reticulate::source_python(system.file(
+                "python", 
+                "fit_curve.py", 
+                package = "OAtools"
+            ))
+            return(fit_curve(data, linear_threshold))
+        }
+    )
 }
 
 #' Append fit results
@@ -60,35 +60,35 @@ run_fit_curve <- function(data, linear_threshold) {
 #' 
 #' curve_fit_data <- append_fit_results(data = filt, linear_threshold = 400)
 append_fit_results <- function(data, linear_threshold) {
-
-  # define wrapper function to append curve-fitting results
-  wrapper <- function(df) {
-    result <- run_fit_curve(df, linear_threshold)
-
-    df$regression_type <- result$regression   # append model type
-
-    fam_pred <- as.numeric(result$y_pred)     # append predicted fluorescence
-    if (length(fam_pred) != nrow(df)) {
-      stop(
-        "Array length returned by fit_curve() mismatches nrows ",
-        "in data frame passed to wrapper."
-      )
+    
+    # define wrapper function to append curve-fitting results
+    wrapper <- function(df) {
+        result <- run_fit_curve(df, linear_threshold)
+        
+        df$regression_type <- result$regression   # append model type
+        
+        fam_pred <- as.numeric(result$y_pred)     # append predicted fam
+        if (length(fam_pred) != nrow(df)) {
+            stop(
+                "Array length returned by fit_curve() mismatches nrows ",
+                "in data frame passed to wrapper."
+            )
+        }
+        df$fam_pred <- as.numeric(result$y_pred)
+        
+        df$x_mid <- round(result$x_mid, 3)        # append midpoint data
+        df$slope <- round(result$slope, 3)        # append slope data
+        df$delta <- round(result$delta, 3)        # append change-in-fam
+        return(df)
     }
-    df$fam_pred <- as.numeric(result$y_pred)
-
-    df$x_mid <- round(result$x_mid, 3)        # append midpoint data
-    df$slope <- round(result$slope, 3)        # append slope data
-    df$delta <- round(result$delta, 3)        # append change-in-fluorescence
-    return(df)
-  }
-
-  # apply wrapper function to each unique well_position and batch_name
-  data <- data |>
-    dplyr::group_by(.data$well_position, .data$batch_name) |>
-    dplyr::group_split() |>
-    purrr::map(wrapper) |>
-    purrr::list_rbind() |>
-    dplyr::arrange(.data$batch_name, .data$well)
+    
+    # apply wrapper function to each unique well_position and batch_name
+    data <- data |>
+        dplyr::group_by(.data$well_position, .data$batch_name) |>
+        dplyr::group_split() |>
+        purrr::map(wrapper) |>
+        purrr::list_rbind() |>
+        dplyr::arrange(.data$batch_name, .data$well)
 }
 
 #' Assign calls with key
@@ -121,42 +121,42 @@ append_fit_results <- function(data, linear_threshold) {
 #'   key_path = key_path
 #' )
 assign_calls_with_key <- function(data, key_path) {
-  
-  # generate key to associate targets with thresholds
-  key <- readxl::read_excel(path = key_path, na = "NA") |>
-    janitor::clean_names()
-
-  key <- key |>
-    dplyr::mutate(target = as.factor(.data$target))
-
-  # join the key to the tibble
-  data <- data |>
-    dplyr::left_join(key, by = c("target_name" = "target"))
-
-  # apply the rules of the key and append the results to the tibble
-  results <- data |>
-    dplyr::mutate(
-      crt_pass   = is.na(.data$crt_threshold) | 
-        (!is.na(.data$crt) & .data$crt < .data$crt_threshold),
-      
-      slope_pass = is.na(.data$slope_threshold) | 
-        .data$slope > .data$slope_threshold,
-      
-      delta_pass = is.na(.data$delta_threshold) | 
-        .data$delta > .data$delta_threshold,
-      
-      result = dplyr::case_when(
-        is.na(.data$crt_threshold) & 
-          is.na(.data$slope_threshold) & 
-          is.na(.data$delta_threshold) ~ "TBD",
-        
-        crt_pass & slope_pass & delta_pass ~ "positive",
-        
-        TRUE ~ "negative"
-      )
-    )
-
-  return(results)
+    
+    # generate key to associate targets with thresholds
+    key <- readxl::read_excel(path = key_path, na = "NA") |>
+        janitor::clean_names()
+    
+    key <- key |>
+        dplyr::mutate(target = as.factor(.data$target))
+    
+    # join the key to the tibble
+    data <- data |>
+        dplyr::left_join(key, by = c("target_name" = "target"))
+    
+    # apply the rules of the key and append the results to the tibble
+    results <- data |>
+        dplyr::mutate(
+            crt_pass   = is.na(.data$crt_threshold) | 
+                (!is.na(.data$crt) & .data$crt < .data$crt_threshold),
+            
+            slope_pass = is.na(.data$slope_threshold) | 
+                .data$slope > .data$slope_threshold,
+            
+            delta_pass = is.na(.data$delta_threshold) | 
+                .data$delta > .data$delta_threshold,
+            
+            result = dplyr::case_when(
+                is.na(.data$crt_threshold) & 
+                    is.na(.data$slope_threshold) & 
+                    is.na(.data$delta_threshold) ~ "TBD",
+                
+                crt_pass & slope_pass & delta_pass ~ "positive",
+                
+                TRUE ~ "negative"
+            )
+        )
+    
+    return(results)
 }
 
 #' Format results for reporting
@@ -192,23 +192,23 @@ assign_calls_with_key <- function(data, key_path) {
 #'   include_fluorescence_data = TRUE
 #' )
 format_results <- function(data, include_fluorescence_data) {
-
-  if (include_fluorescence_data) {
-
-    fluorescence_cols <- intersect(c("fam", "fam_pred"), names(data))
-
-    data <- data |>
-      tidyr::pivot_wider(
-        names_from = "cycle",
-        values_from = tidyselect::all_of(fluorescence_cols),
-        names_glue = "{.value}_cycle{cycle}"
-      )
-
-  } else {
-    data <- data |>
-      dplyr::distinct(.keep_all = TRUE) |>
-      dplyr::select(-dplyr::matches("fam|cycle"))
-  }
-
-  return(data)
+    
+    if (include_fluorescence_data) {
+        
+        fluorescence_cols <- intersect(c("fam", "fam_pred"), names(data))
+        
+        data <- data |>
+            tidyr::pivot_wider(
+                names_from = "cycle",
+                values_from = tidyselect::all_of(fluorescence_cols),
+                names_glue = "{.value}_cycle{cycle}"
+            )
+        
+    } else {
+        data <- data |>
+            dplyr::distinct(.keep_all = TRUE) |>
+            dplyr::select(-dplyr::matches("fam|cycle"))
+    }
+    
+    return(data)
 }

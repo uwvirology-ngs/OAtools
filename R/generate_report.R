@@ -26,15 +26,15 @@
 #' 
 #' generate_report(result_data, path)
 generate_report <- function(data, path, analysis = 'native') {
-
-  data_file <- tempfile(fileext = ".rds")
-  saveRDS(data, data_file)
-
-  rmarkdown::render(
-    input = system.file("reports", "pcr_report.rmd", package = "OAtools"),
-    output_file = "report.html",
-    output_dir = path,
-    params = list(data_path = data_file, analysis = analysis),
-    envir = environment()
-  )
+    
+    data_file <- tempfile(fileext = ".rds")
+    saveRDS(data, data_file)
+    
+    rmarkdown::render(
+        input = system.file("reports", "pcr_report.rmd", package = "OAtools"),
+        output_file = "report.html",
+        output_dir = path,
+        params = list(data_path = data_file, analysis = analysis),
+        envir = environment()
+    )
 }

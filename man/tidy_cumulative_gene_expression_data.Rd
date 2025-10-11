@@ -25,7 +25,7 @@ into a tidy R tibble.
 dir = system.file("extdata", package = "OAtools")
 
 tidy_run_data_cumulative <- tidy_cumulative_gene_expression_data(
-  directory = dir, 
-  num_results = 96
+    directory = dir, 
+    num_results = 96
 )
 }

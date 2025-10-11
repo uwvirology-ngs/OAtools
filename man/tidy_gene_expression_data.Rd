@@ -22,9 +22,9 @@ tidy R tibble.
 }
 \examples{
 path = system.file(
-  "extdata", 
-  "oa_gene_expression_batch1.xlsx", 
-  package = "OAtools"
+    "extdata", 
+    "oa_gene_expression_batch1.xlsx", 
+    package = "OAtools"
 )
 
 tidy_run_data <- tidy_gene_expression_data(path = path, num_results = 96)

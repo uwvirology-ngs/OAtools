@@ -12,8 +12,8 @@ vignette: >
 
 ```{r setup, include=FALSE}
 knitr::opts_chunk$set(
-  collapse = TRUE,
-  comment = "#>"
+    collapse = TRUE,
+    comment = "#>"
 )
 ```
 
@@ -58,7 +58,7 @@ commands in the R console:
 ```{r bioconductor-install, eval=FALSE}
 # if needed, install Bioconductor
 if (!require("BiocManager", quietly = TRUE)) {
-  install.packages("BiocManager")
+    install.packages("BiocManager")
 }
 
 # install OAtools from Bioconductor
@@ -90,9 +90,9 @@ a slice of one of the positive fluorescence curves.
 ```{r method1-load_data}
 # save filepath to example OpenArray gene expression run data
 path = system.file(
-  "extdata", 
-  "oa_gene_expression_batch1.xlsx", 
-  package = "OAtools"
+    "extdata", 
+    "oa_gene_expression_batch1.xlsx", 
+    package = "OAtools"
 )
 
 # transform the run data into a tibble
@@ -100,10 +100,10 @@ tidy_run_data <- tidy_gene_expression_data(path = path, num_results = 96)
 
 # print a slice of the tibble
 tidy_run_data |> 
-  dplyr::select(well, sample_name:fam) |> 
-  dplyr::filter(well == 2345) |>
-  dplyr::slice(10:20) |> 
-  knitr::kable(format = "markdown")
+    dplyr::select(well, sample_name:fam) |> 
+    dplyr::filter(well == 2345) |>
+    dplyr::slice(10:20) |> 
+    knitr::kable(format = "markdown")
 ```
 
 If we intend to use the relative threshold analysis native to the instrument 
@@ -123,9 +123,9 @@ initial step of loading the run data into tibble format is the same.
 ```{r method2-load_data}
 # save filepath to example OpenArray gene expression run data
 path = system.file(
-  "extdata", 
-  "oa_gene_expression_batch1.xlsx", 
-  package = "OAtools"
+    "extdata", 
+    "oa_gene_expression_batch1.xlsx", 
+    package = "OAtools"
 )
 
 # transform the run data into a tibble
@@ -145,16 +145,21 @@ considered trivially negative and fit to linear models instead.
 ```{r method2-modify_data}
 # optimize 5PL/linear models to each curve and append to the dataset
 curve_fit_data <- append_fit_results(
-  data = tidy_run_data, 
-  linear_threshold = 400
+    data = tidy_run_data, 
+    linear_threshold = 400
 )
 
 # print a snapshot of the dataset collapsed to unique reactions
 curve_fit_data |> 
-  dplyr::select(well, sample_name:target_name, regression_type, x_mid:delta) |> 
-  dplyr::distinct(well, .keep_all = TRUE) |> 
-  dplyr::slice_head(n = 10) |> 
-  knitr::kable(format = "markdown")
+    dplyr::select(
+        well, 
+        sample_name:target_name, 
+        regression_type, 
+        x_mid:delta
+    ) |> 
+    dplyr::distinct(well, .keep_all = TRUE) |> 
+    dplyr::slice_head(n = 10) |> 
+    knitr::kable(format = "markdown")
 ```
 
 The next step is to assign results based off of the extracted features. The 
@@ -167,23 +172,23 @@ run ?OAtools::target_threshold_key in the R console.
 ```{r method2-interpret_data}
 # save filepath to target-threshold-key
 key_path = system.file(
-  "extdata", 
-  "target_threshold_key.xlsx", 
-  package = "OAtools"
+    "extdata", 
+    "target_threshold_key.xlsx", 
+    package = "OAtools"
 )
 
 # assign results based on the key and append to the data frame
 result_data <- assign_calls_with_key(
-  data = curve_fit_data, 
-  key_path = key_path
+    data = curve_fit_data, 
+    key_path = key_path
 )
 
 # print a snapshot including the logic for determining the result
 result_data |> 
-  dplyr::select(well, x_mid:delta, slope_threshold:crt_threshold, result) |> 
-  dplyr::distinct(well, .keep_all = TRUE) |> 
-  dplyr::slice_head(n = 10) |> 
-  knitr::kable(format = "markdown")
+    dplyr::select(well, x_mid:delta, slope_threshold:crt_threshold, result) |> 
+    dplyr::distinct(well, .keep_all = TRUE) |> 
+    dplyr::slice_head(n = 10) |> 
+    knitr::kable(format = "markdown")
 ```
 
 Once calls are populated into the results column, the workflow ends as before, 
