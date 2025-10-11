@@ -34,3 +34,5 @@ Suggests:
 Config/testthat/edition: 3
 VignetteBuilder: knitr
 biocViews: qPCR, GeneExpression, Regression
+URL: https://github.com/uwvirology-ngs/OAtools
+BugReports: https://github.com/uwvirology-ngs/OAtools/issues
