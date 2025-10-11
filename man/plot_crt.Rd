@@ -7,7 +7,8 @@
 plot_crt(data, batch = NA)
 }
 \arguments{
-\item{data}{a tibble of qPCR data; either a single batch or a cumulative tibble with the batch parameter specified}
+\item{data}{a tibble of qPCR data; either a single batch or a cumulative
+tibble with the batch parameter specified}
 
 \item{batch}{character string for input batch for plotting}
 }
@@ -15,8 +16,8 @@ plot_crt(data, batch = NA)
 a ggplot2 figure
 }
 \description{
-This function generates a box and whisker plot visualizing the distribution of
-observed crt values for each assay target in a given run.
+This function generates a box and whisker plot visualizing the
+distribution of observed crt values for each assay target in a given run.
 }
 \examples{
 data(tidy_run_data)

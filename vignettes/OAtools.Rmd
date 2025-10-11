@@ -23,20 +23,37 @@ library(OAtools)
 
 ## Introduction
 
-Highly multiplex PCR platforms enable drastically greater throughput compared to traditional PCR methods, making them critical for pathogen detection and gene expression experiments in public health and clinical research environments. One such platform is ThermoFisher Scientific's OpenArray Technology ([ThermoFisher - OpenArray](https://www.thermofisher.com/us/en/home/life-science/pcr/real-time-pcr/real-time-openarray.html){.uri}), which our lab uses to screen patients swabs for respiratory viral infection. With 3000+ qPCR reactions taking place on each OpenArray plate, the sheer volume of data produced requires an informatics solution for downstream analyses and reporting.
+Highly multiplex PCR platforms enable drastically greater throughput compared 
+to traditional PCR methods, making them critical for pathogen detection and 
+gene expression experiments in public health and clinical research environments.
+One such platform is ThermoFisher Scientific's OpenArray Technology, which our 
+lab uses to screen patients swabs for respiratory viral infection. With 3000+ 
+qPCR reactions taking place on each OpenArray plate, the sheer volume of data 
+produced requires an informatic solution for downstream analyses and reporting.
 
-ThermoFisher provides the proprietary QuantStudio 12K Flex Software and the Relative Quantification Application for the data analysis. However, no open-source software exists for the wrangling and analysis of OpenArray gene expression data. To bridge the gap, OAtools streamlines the analysis process from the initial cleaning steps to communication of results through an R Markdown document. Our goal in sharing OAtools is to support open-source and shareable analyses of OpenArray gene expression data, especially in clinical research environments.
+ThermoFisher provides the proprietary QuantStudio 12K Flex Software and the 
+Relative Quantification Application for the data analysis. However, no 
+open-source software exists for the wrangling and analysis of OpenArray gene 
+expression data. To bridge the gap, OAtools streamlines the analysis process 
+from the initial cleaning steps to communication of results through an R 
+Markdown document. Our goal in sharing OAtools is to support open-source 
+and shareable analyses of OpenArray gene expression data, especially in 
+clinical research environments.
 
 ## Installation
 
-To install the development version of *OAtools* directly from the uwvirology-ngs public GitHub, (<https://github.com/uwvirology-ngs/OAtools>) run the commands below in your R console:
+To install the development version of *OAtools* directly from the 
+uwvirology-ngs public GitHub, (<https://github.com/uwvirology-ngs/OAtools>) 
+run the commands below in your R console:
 
 ```{r pak-install, eval=FALSE}
 # install OAtools from the uwvirology-ngs GitHub
 pak::pak("uwvirology-ngs/OAtools")
 ```
 
-Our lab plans to share this project as a Bioconductor package. Once available, this package may be installed from Bioconductor by running the following commands in the R console:
+Our lab plans to share this project as a Bioconductor package. Once available, 
+this package may be installed from Bioconductor by running the following 
+commands in the R console:
 
 ```{r bioconductor-install, eval=FALSE}
 # if needed, install Bioconductor
@@ -52,15 +69,31 @@ BiocManager::install("OAtools")
 
 ### Overview
 
-*OAtools* supports two major methods of data analysis for OpenArray qPCR reactions. The first method is to carry over the relative threshold analysis native to the QuantStudio 12K Flex Software. ([ThermoFisher-OpenArray-Crt](https://documents.thermofisher.com/TFS-Assets/LSG/brochures/CO28730-Crt-Tech-note_FLR.pdf){.uri}) The second method, our open-source option, is to fit a logistic model to each fluorescence curve and categorize reactions based on the features of the model curve. In particular, *OAtools* applies the 5-parameter logistic model as it accounts for curve asymmetry, which is frequently high in qPCR curves.
+*OAtools* supports two major methods of data analysis for OpenArray qPCR 
+reactions. The first method is to carry over the relative threshold analysis 
+native to the QuantStudio 12K Flex Software. The second method, our open-source 
+option, is to fit a logistic model to each fluorescence curve and categorize 
+reactions based on the features of the model curve. In particular, *OAtools* 
+applies the 5-parameter logistic model as it accounts for curve asymmetry, 
+which is frequently high in qPCR curves.
 
 ### Method 1 - Relative Threshold
 
-To start, load example run data included in the package and assign it to a variable as below. The tidy_gene_expression_data() function then transforms the raw data output in .xlsx format from QuantStudio 12K Flex software into a Tidyverse-friendly tibble object, which is the intended input for downstream functions. As there are 40 cycles in each unique qPCR reaction, the tibble stored 40 rows for each. The code below demonstrates this workflow and shows a slice of one of the positive fluorescence curves.
+To start, load example run data included in the package and assign it to a 
+variable as below. The tidy_gene_expression_data() function then transforms 
+the raw data output in .xlsx format from QuantStudio 12K Flex software into a 
+Tidyverse-friendly tibble object, which is the intended input for downstream 
+functions. As there are 40 cycles in each unique qPCR reaction, the tibble 
+stored 40 rows for each. The code below demonstrates this workflow and shows 
+a slice of one of the positive fluorescence curves.
 
 ```{r method1-load_data}
 # save filepath to example OpenArray gene expression run data
-path = system.file("extdata", "oa_gene_expression_batch1.xlsx", package = "OAtools")
+path = system.file(
+  "extdata", 
+  "oa_gene_expression_batch1.xlsx", 
+  package = "OAtools"
+)
 
 # transform the run data into a tibble
 tidy_run_data <- tidy_gene_expression_data(path = path, num_results = 96)
@@ -73,7 +106,9 @@ tidy_run_data |>
   knitr::kable(format = "markdown")
 ```
 
-If we intend to use the relative threshold analysis native to the instrument software, we can generate a run result report directly. This line generates a .html report and saves it to the working directory.
+If we intend to use the relative threshold analysis native to the instrument 
+software, we can generate a run result report directly. This line generates 
+an html report and saves it to the working directory.
 
 ```{r method1-report_data, eval=FALSE}
 # generate a .html report from the tidy_run_data
@@ -82,21 +117,37 @@ generate_report(data = tidy_run_data, path = ".", analysis = 'native')
 
 ### Method 2 - Curve Fitting
 
-If we intend to employ the curve-fitting approach to analyze the data, the initial step of loading the run data into tibble format is the same.
+If we intend to employ the curve-fitting approach to analyze the data, the 
+initial step of loading the run data into tibble format is the same.
 
 ```{r method2-load_data}
 # save filepath to example OpenArray gene expression run data
-path = system.file("extdata", "oa_gene_expression_batch1.xlsx", package = "OAtools")
+path = system.file(
+  "extdata", 
+  "oa_gene_expression_batch1.xlsx", 
+  package = "OAtools"
+)
 
 # transform the run data into a tibble
 tidy_run_data <- tidy_gene_expression_data(path = path, num_results = 96)
 ```
 
-However, we must now optimize the 5-parameter logistic regression to each fluorescence curve and add extracted features to the tibble. The append_fit_results() function adds extracted features such as the overall change-in-fluorescence and the slope at the midpoint of the reaction to the input tibble. This function is powered by SciPy for model optimization and is the most computationally expensive of the package, so it may take a moment to run. To speed up processing and prevent overflow errors, reactions with overall change-in-fluorescence below the linear_threshold parameter are considered trivially negative and fit to linear models instead.
+However, we must now optimize the 5-parameter logistic regression to each 
+fluorescence curve and add extracted features to the tibble. The 
+append_fit_results() function adds extracted features such as the overall 
+change-in-fluorescence and the slope at the midpoint of the reaction to the 
+input tibble. This function is powered by SciPy for model optimization and is 
+the most computationally expensive of the package, so it may take a moment to 
+run. To speed up processing and prevent overflow errors, reactions with 
+overall change-in-fluorescence below the linear_threshold parameter are 
+considered trivially negative and fit to linear models instead.
 
 ```{r method2-modify_data}
 # optimize 5PL/linear models to each curve and append to the dataset
-curve_fit_data <- append_fit_results(data = tidy_run_data, linear_threshold = 400)
+curve_fit_data <- append_fit_results(
+  data = tidy_run_data, 
+  linear_threshold = 400
+)
 
 # print a snapshot of the dataset collapsed to unique reactions
 curve_fit_data |> 
@@ -106,14 +157,26 @@ curve_fit_data |>
   knitr::kable(format = "markdown")
 ```
 
-The next step is to assign results based off of the extracted features. The assign_calls_with_key() function accepts a .xlsx file that associates each assay target with user-selected thresholds for cycle threshold, midpoint slope, and overall change-in-fluorescence that determine whether amplification in the well is interpreted as positive or negative. For more details, run ?OAtools::target_threshold_key in the R console.
+The next step is to assign results based off of the extracted features. The 
+assign_calls_with_key() function accepts a .xlsx file that associates each 
+assay target with user-selected thresholds for cycle threshold, midpoint 
+slope, and overall change-in-fluorescence that determine whether amplification 
+in the well is interpreted as positive or negative. For more details, 
+run ?OAtools::target_threshold_key in the R console.
 
 ```{r method2-interpret_data}
 # save filepath to target-threshold-key
-key_path = system.file("extdata", "target_threshold_key.xlsx", package = "OAtools")
+key_path = system.file(
+  "extdata", 
+  "target_threshold_key.xlsx", 
+  package = "OAtools"
+)
 
 # assign results based on the key and append to the data frame
-result_data <- assign_calls_with_key(data = curve_fit_data, key_path = key_path)
+result_data <- assign_calls_with_key(
+  data = curve_fit_data, 
+  key_path = key_path
+)
 
 # print a snapshot including the logic for determining the result
 result_data |> 
@@ -123,7 +186,9 @@ result_data |>
   knitr::kable(format = "markdown")
 ```
 
-Once calls are populated into the results column, the workflow ends as before, with generation of a report document. This time, the analysis parameter is set to the 'curve-fitting' option.
+Once calls are populated into the results column, the workflow ends as before, 
+with generation of a report document. This time, the analysis parameter is set 
+to the 'curve-fitting' option.
 
 ```{r method2-report_data, eval=FALSE}
 # generate a .html report from the tidy_run_data

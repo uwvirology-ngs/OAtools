@@ -7,18 +7,25 @@
 tidy_cumulative_gene_expression_data(directory, num_results = 2688)
 }
 \arguments{
-\item{directory}{file path to run data directory, which may hold several .xlsx files exported from QuantStudio 12K Flex Software}
+\item{directory}{file path to run data directory, which may hold several
+.xlsx files exported from QuantStudio 12K Flex Software}
 
-\item{num_results}{an integer reflecting the number of rows on each 'results' sheet}
+\item{num_results}{an integer reflecting the number of rows
+on each 'results' sheet}
 }
 \value{
 A tibble
 }
 \description{
-This function transforms bulk raw gene expression run data exported in .xlsx format from
-the OpenArray QuantStudio 12K Flex qPCR platform into a tidy R tibble.
+This function transforms bulk raw gene expression run data exported
+in .xlsx format from the OpenArray QuantStudio 12K Flex qPCR platform
+into a tidy R tibble.
 }
 \examples{
 dir = system.file("extdata", package = "OAtools")
-tidy_run_data_cumulative <- tidy_cumulative_gene_expression_data(directory = dir, num_results = 96)
+
+tidy_run_data_cumulative <- tidy_cumulative_gene_expression_data(
+  directory = dir, 
+  num_results = 96
+)
 }

@@ -7,8 +7,10 @@
 An Excel sheet (\code{.xlsx}) with four columns:
 \describe{
 \item{\code{target}}{the target assay ID}
-\item{\code{slope_threshold}}{minimum acceptable slope in the exponential phase for a positive result}
-\item{\code{delta_threshold}}{minimum acceptable overall change in fluorescence for a positive result}
+\item{\code{slope_threshold}}{minimum acceptable slope in the exponential
+phase for a positive result}
+\item{\code{delta_threshold}}{minimum acceptable overall change in
+fluorescence for a positive result}
 \item{\code{crt_threshold}}{maximum acceptable crt for a positive result}
 }
 }
@@ -16,12 +18,14 @@ An Excel sheet (\code{.xlsx}) with four columns:
 Written manually for use with resulting functions.
 }
 \description{
-This Excel file (.xlsx) contains a table associating each assay target contained in the example gene expression
-run data with thresholds values. This key is optionally used to aid in concurrently interpreting data including
-numerous targets with dissimilar behaviors.
+This Excel file (.xlsx) contains a table associating each assay target
+contained in the example gene expression run data with thresholds values.
+This key is optionally used to aid in concurrently interpreting data
+including numerous targets with dissimilar behaviors.
 }
 \details{
-The example key is stored in the \verb{inst/extdata/} directory of the package. Access this file with:
+The example key is stored in the \verb{inst/extdata/} directory of the package.
+Access this file with:
 
 \code{system.file("extdata", "target_threshold_key.xlsx", package = "OAtools")}.
 }

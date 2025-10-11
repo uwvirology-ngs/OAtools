@@ -16,12 +16,21 @@ for each assay target}
 A tibble
 }
 \description{
-Assigns positive and negative calls to each reaction depending on how the features
-of the model regression compare to the thresholds defined for the respective assay target.
-Appends these calls to the data frame and returns the modified tibble.
+Assigns positive and negative calls to each reaction depending on how the
+features of the model regression compare to the thresholds defined for the
+respective assay target. Appends these calls to the data frame and
+returns the modified tibble.
 }
 \examples{
 data(curve_fit_data)
-key_path = system.file("extdata", "target_threshold_key.xlsx", package = "OAtools")
-result_data <- assign_calls_with_key(data = curve_fit_data, key_path = key_path)
+key_path = system.file(
+  "extdata", 
+  "target_threshold_key.xlsx", 
+  package = "OAtools"
+)
+
+result_data <- assign_calls_with_key(
+  data = curve_fit_data, 
+  key_path = key_path
+)
 }

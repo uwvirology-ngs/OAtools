@@ -1,13 +1,18 @@
 #' Plot overview heat map
 #'
-#' This function generates a heat map summarizing the amplification status results for
-#' technical replicates grouped by sample, assay target, and batch name.
+#' This function generates a heat map summarizing the amplification status 
+#' results for technical replicates grouped by sample, assay target, 
+#' and batch name.
 #'
-#' @param data a tibble of qPCR data; either a single batch or a cumulative tibble with the batch parameter specified
-#' @param sample_list optional character list of samples with which to complete heat map
-#' @param target_list optional character list of assay targets with which to complete heat map
+#' @param data a tibble of qPCR data; either a single batch or 
+#' a cumulative tibble with the batch parameter specified
+#' @param sample_list optional character list of samples 
+#' with which to complete heat map
+#' @param target_list optional character list of assay targets 
+#' with which to complete heat map
 #' @param batch character string for input batch for plotting
-#' @param analysis character string for analytic method, supports 'native' and 'curve-fitting' approaches
+#' @param analysis character string for analytic method, 
+#' supports 'native' and 'curve-fitting' approaches
 #'
 #' @returns a ggplot2 figure
 #' @export
@@ -15,7 +20,8 @@
 #' @examples
 #' data(tidy_run_data)
 #' fig <- plot_overview(tidy_run_data)
-plot_overview <- function(data, sample_list = NA, target_list = NA, batch = NA, analysis = 'native')
+plot_overview <- function(data, sample_list = NA, target_list = NA, 
+                          batch = NA, analysis = 'native')
 {
 
   # filter by batch number if given
@@ -64,9 +70,17 @@ plot_overview <- function(data, sample_list = NA, target_list = NA, batch = NA, 
 
   # generate heatmap figure
   heatmap <- summary |>
-    ggplot2::ggplot(mapping = ggplot2::aes(x = .data$target_name, y = .data$sample_name, fill = .data$category)) +
+    ggplot2::ggplot(mapping = ggplot2::aes(
+      x = .data$target_name, 
+      y = .data$sample_name, 
+      fill = .data$category
+    )) +
     ggplot2::geom_tile(color = "black") +
-    ggplot2::scale_fill_manual(values = c("Negative" = "white", "Inconclusive" = "blue", "Positive" = "green")) +
+    ggplot2::scale_fill_manual(values = c(
+      "Negative" = "white", 
+      "Inconclusive" = "blue", 
+      "Positive" = "green"
+    )) +
     ggplot2::theme_minimal() +
     ggplot2::labs(
       title = "Amplification Status per Sample/Target Combination",
@@ -88,10 +102,12 @@ plot_overview <- function(data, sample_list = NA, target_list = NA, batch = NA, 
 
 #' Plot a 3-dimensional quality control graphic
 #'
-#' This function generates a 3-dimensional QC plot comparing the amplification status to the
-#' crt, Cq conf, and amplification score output by QuantStudio 12K Flex software.
+#' This function generates a 3-dimensional QC plot comparing the 
+#' amplification status to the crt, Cq conf, and amplification score 
+#' output by QuantStudio 12K Flex software.
 #'
-#' @param data a tibble of qPCR data; either a single batch or a cumulative tibble with the batch parameter specified
+#' @param data a tibble of qPCR data; either a single batch or a 
+#' cumulative tibble with the batch parameter specified
 #' @param batch character string for input batch for plotting
 #'
 #' @returns a plotly figure
@@ -116,12 +132,15 @@ plot_qc <- function(data, batch = NA)
     plotly::plot_ly(
       x = ~.data$crt, y = ~.data$amp_score, z = ~.data$cq_conf,
       color = ~.data$amp_status, colors = c('#BF382A', '#0C4B8E'),
-      text = paste(data$batch_name, data$target_name, data$well_position, sep = "\n")
+      text = paste(
+        data$batch_name, data$target_name, data$well_position, sep = "\n"
+      )
     ) |>
     plotly::add_markers() |>
-    plotly::layout(scene = list(xaxis = list(title = 'Crt', range = c(0, 40)),
-                                yaxis = list(title = 'Amp Score', range = c(0, 2)),
-                                zaxis = list(title = 'Cq Conf', range = c(0, 1)))
+    plotly::layout(
+      scene = list(xaxis = list(title = 'Crt', range = c(0, 40)), 
+                   yaxis = list(title = 'Amp Score', range = c(0, 2)), 
+                   zaxis = list(title = 'Cq Conf', range = c(0, 1)))
     ) |>
     plotly::layout(title = unique(data$batch_name))
 
@@ -130,10 +149,11 @@ plot_qc <- function(data, batch = NA)
 
 #' Plot crt values
 #'
-#' This function generates a box and whisker plot visualizing the distribution of
-#' observed crt values for each assay target in a given run.
+#' This function generates a box and whisker plot visualizing the 
+#' distribution of observed crt values for each assay target in a given run.
 #'
-#' @param data a tibble of qPCR data; either a single batch or a cumulative tibble with the batch parameter specified
+#' @param data a tibble of qPCR data; either a single batch or a cumulative 
+#' tibble with the batch parameter specified
 #' @param batch character string for input batch for plotting
 #'
 #' @returns a ggplot2 figure
@@ -156,7 +176,11 @@ plot_crt <- function(data, batch = NA)
     dplyr::distinct(.data$well_position, .keep_all = TRUE)
 
   # generate box and whisker plot
-  fig <- ggplot2::ggplot(data = data, mapping = ggplot2::aes(x = .data$target_name, y = .data$crt, fill = .data$target_name)) +
+  fig <- ggplot2::ggplot(data = data, mapping = ggplot2::aes(
+    x = .data$target_name, 
+    y = .data$crt, 
+    fill = .data$target_name
+  )) +
     ggplot2::geom_boxplot(outlier.shape = NA, alpha = 0.8, na.rm = TRUE) +
     ggplot2::geom_jitter(
       position = ggplot2::position_jitter(width = 0.3, seed = 387),
@@ -165,7 +189,10 @@ plot_crt <- function(data, batch = NA)
       color = "black",
       na.rm = TRUE
     ) +
-    ggplot2::scale_x_discrete(limits = rev(levels(data$target_name)), drop = FALSE) +
+    ggplot2::scale_x_discrete(limits = rev(
+      levels(data$target_name)), 
+      drop = FALSE
+    ) +
     ggplot2::scale_y_reverse(limits = c(40,0)) +
     ggplot2::scale_fill_viridis_d(option = "C", drop = FALSE) +
     ggplot2::coord_flip() +

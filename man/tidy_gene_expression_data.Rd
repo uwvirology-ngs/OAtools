@@ -9,16 +9,23 @@ tidy_gene_expression_data(path, num_results = 2688)
 \arguments{
 \item{path}{file path to the run data (.xlsx)}
 
-\item{num_results}{an integer reflecting the number of rows on the 'results' sheet}
+\item{num_results}{an integer reflecting the number of rows
+on the 'results' sheet}
 }
 \value{
 A tibble
 }
 \description{
-This function transforms raw gene expression run data exported in .xlsx format from
-the OpenArray QuantStudio 12K Flex qPCR platform into a tidy R tibble.
+This function transforms raw gene expression run data exported in .xlsx
+format from the OpenArray QuantStudio 12K Flex qPCR platform into a
+tidy R tibble.
 }
 \examples{
-path = system.file("extdata", "oa_gene_expression_batch1.xlsx", package = "OAtools")
+path = system.file(
+  "extdata", 
+  "oa_gene_expression_batch1.xlsx", 
+  package = "OAtools"
+)
+
 tidy_run_data <- tidy_gene_expression_data(path = path, num_results = 96)
 }

@@ -13,22 +13,27 @@ plot_overview(
 )
 }
 \arguments{
-\item{data}{a tibble of qPCR data; either a single batch or a cumulative tibble with the batch parameter specified}
+\item{data}{a tibble of qPCR data; either a single batch or
+a cumulative tibble with the batch parameter specified}
 
-\item{sample_list}{optional character list of samples with which to complete heat map}
+\item{sample_list}{optional character list of samples
+with which to complete heat map}
 
-\item{target_list}{optional character list of assay targets with which to complete heat map}
+\item{target_list}{optional character list of assay targets
+with which to complete heat map}
 
 \item{batch}{character string for input batch for plotting}
 
-\item{analysis}{character string for analytic method, supports 'native' and 'curve-fitting' approaches}
+\item{analysis}{character string for analytic method,
+supports 'native' and 'curve-fitting' approaches}
 }
 \value{
 a ggplot2 figure
 }
 \description{
-This function generates a heat map summarizing the amplification status results for
-technical replicates grouped by sample, assay target, and batch name.
+This function generates a heat map summarizing the amplification status
+results for technical replicates grouped by sample, assay target,
+and batch name.
 }
 \examples{
 data(tidy_run_data)

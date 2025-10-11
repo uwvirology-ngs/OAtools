@@ -4,7 +4,8 @@
 #'
 #' @param data a tibble of qPCR data ready for reporting
 #' @param path intended outfile path
-#' @param analysis character string for analytic method, supports 'native' and 'curve-fitting' approaches
+#' @param analysis character string for analytic method, supports 'native' 
+#' and 'curve-fitting' approaches
 #'
 #' @returns an .html report summarizing the OpenArray run results
 #'
@@ -12,9 +13,17 @@
 #'
 #' @examples
 #' data(curve_fit_data)
-#' key_path = system.file("extdata", "target_threshold_key.xlsx", package = "OAtools")
-#' result_data <- assign_calls_with_key(data = curve_fit_data, key_path = key_path)
+#' key_path = system.file(
+#'   "extdata", 
+#'   "target_threshold_key.xlsx", 
+#'   package = "OAtools"
+#' )
+#' result_data <- assign_calls_with_key(
+#'   data = curve_fit_data, 
+#'   key_path = key_path
+#' )
 #' path = file.path("..", "reports")
+#' 
 #' generate_report(result_data, path)
 generate_report <- function(data, path, analysis = 'native') {
 

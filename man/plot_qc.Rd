@@ -7,7 +7,8 @@
 plot_qc(data, batch = NA)
 }
 \arguments{
-\item{data}{a tibble of qPCR data; either a single batch or a cumulative tibble with the batch parameter specified}
+\item{data}{a tibble of qPCR data; either a single batch or a
+cumulative tibble with the batch parameter specified}
 
 \item{batch}{character string for input batch for plotting}
 }
@@ -15,8 +16,9 @@ plot_qc(data, batch = NA)
 a plotly figure
 }
 \description{
-This function generates a 3-dimensional QC plot comparing the amplification status to the
-crt, Cq conf, and amplification score output by QuantStudio 12K Flex software.
+This function generates a 3-dimensional QC plot comparing the
+amplification status to the crt, Cq conf, and amplification score
+output by QuantStudio 12K Flex software.
 }
 \examples{
 data(tidy_run_data)
