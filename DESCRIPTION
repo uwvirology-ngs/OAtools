@@ -2,7 +2,10 @@ Package: OAtools
 Title: What the Package Does (One Line, Title Case)
 Version: 0.99.0
 Authors@R: 
-    person("Aidan", "Shea", email = "aidantshea@gmail.com", role = c("aut", "cre"))
+    person("Aidan", "Shea", 
+    email = "aidantshea@gmail.com", 
+    role = c("aut", "cre"),
+    comment = c(ORCID = "0009-0001-9256-7439"))
 Description: What the package does (one paragraph).
 License: MIT + file LICENSE
 Encoding: UTF-8
