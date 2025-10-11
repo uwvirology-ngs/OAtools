@@ -22,7 +22,6 @@ in a tibble and appends the model curve parameters and features to the data set.
 workflow enables batch computation for model curves optimized to the qPCR data.
 }
 \examples{
-targets <- c("S. pneumoniae_Ba06439619_s1", "RNAse_P_Pa04930436_g1")
-data <- tidy_run_data_cumulative |> dplyr::filter(target_name \%in\% targets)
-curve_fit_data <- append_fit_results(data = data, linear_threshold = 400)
+filt <- tidy_run_data |> dplyr::filter(sample_name == "Sample-102")
+curve_fit_data <- append_fit_results(data = filt, linear_threshold = 400)
 }

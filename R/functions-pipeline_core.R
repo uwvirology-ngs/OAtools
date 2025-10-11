@@ -43,9 +43,8 @@ run_fit_curve <- function(data, linear_threshold) {
 #' @export
 #'
 #' @examples
-#' targets <- c("S. pneumoniae_Ba06439619_s1", "RNAse_P_Pa04930436_g1")
-#' data <- tidy_run_data_cumulative |> dplyr::filter(target_name %in% targets)
-#' curve_fit_data <- append_fit_results(data = data, linear_threshold = 400)
+#' filt <- tidy_run_data |> dplyr::filter(sample_name == "Sample-102")
+#' curve_fit_data <- append_fit_results(data = filt, linear_threshold = 400)
 append_fit_results <- function(data, linear_threshold) {
 
   # define wrapper function to append curve-fitting results
@@ -135,6 +134,8 @@ assign_calls_with_key <- function(data, key_path) {
 #' @export
 #'
 #' @examples
+#' key_path = system.file("extdata", "target_threshold_key.xlsx", package = "OAtools")
+#' result_data <- assign_calls_with_key(data = curve_fit_data, key_path = key_path)
 #' formatted_data <- format_results(data = result_data, include_fluorescence_data = TRUE)
 format_results <- function(data, include_fluorescence_data) {
 
