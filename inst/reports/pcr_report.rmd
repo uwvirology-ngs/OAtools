@@ -18,7 +18,7 @@ pcr_data <- readRDS(params$data_path)
 
 ## Narrative
 
-This report summarizes the results of multiplex PCR data from OpenArray gene expression runs. 
+This report document consolidates run information and QC plots generated from multiplex qPCR data following OpenArray gene expression runs. This document supplements, but does not replace, the tabulated analyzed data output by the core pipeline.
 
 ### Batches
 
@@ -35,9 +35,23 @@ for (batch in batches) {
 
 ## Graphics
 
+### Fluroescence Curve Quality Control
+
+This graphic plots each qPCR reaction against the 'Crt', 'Amp Score', and 'Cq Conf' output by QuantStudio 12K Flex software. The Crt is the cycle value where fluorescence crosses some threshold value determined from the shape of the amplification curve. Amplification score and Cq confidence represent the quality of the amplification curve and the reliability of the cycle value, respectively. 
+
+For ideal sensitivity and specificity, an amplification score of 1.2 or greater and a Cq confidence of 0.7 or greater is often expected, though the particular thresholds may vary by assay. If a significant proportion of reactions fail to clear these metrics, and the assay is known to generally perform well, an issue with the run should be suspected. Results with a Crt of 28 or higher may represent false positives, and are best interpreted by manual review or sigmoidal curve-fitting. 
+
+```{r, fig.align='center'}
+OAtools::plot_qc(data = pcr_data)
+```
+
 ### Amplification Overview
 
-```{r, fig.width=nlevels(pcr_data$target_name)*3, fig.height=nlevels(pcr_data$sample_name)/3, fig.align='center'}
+Here we summarize the amplification status of each sample per assay in heat map format. Technical replicates are grouped into single cells where the highest amplification status is considered. i.e. if one replicate is positive and the other negative, the sample is displayed as positive for that assay. 
+
+It is best to ensure here that control material is positive for all expected assays and negative for all other assays, respectively. Control material positive for unexpected assays may indicate off-target amplification effects or potential cross-contamination.
+
+```{r, fig.width=nlevels(pcr_data$target_name)*3, fig.height=nlevels(pcr_data$sample_name)/2, fig.align='center'}
 OAtools::plot_overview(
   data = pcr_data,
   sample_list = levels(pcr_data$sample_name),
@@ -46,13 +60,9 @@ OAtools::plot_overview(
 )
 ```
 
-### Fluroescence Curve Quality Control
-
-```{r, fig.align='center'}
-OAtools::plot_qc(data = pcr_data)
-```
-
 ### Crt Distribution
+
+Here is displayed the distribution of observed Crt values by assay target. In general, an approximately normal distribution of Crt values is expected for each assay target over large numbers of samples. Extreme outliers may indicate the need for manual review.
 
 ```{r, fig.height=nlevels(pcr_data$target_name), fig.align='center'}
 OAtools::plot_crt(data = pcr_data)
