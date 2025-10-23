@@ -62,3 +62,6 @@ inst/doc
 
 # R Profile
 .Rprofile
+
+# html docs
+*.html
