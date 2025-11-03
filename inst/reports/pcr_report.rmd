@@ -67,3 +67,16 @@ Here is displayed the distribution of observed Crt values by assay target. In ge
 ```{r, fig.height=nlevels(pcr_data$target_name), fig.align='center'}
 OAtools::plot_crt(data = pcr_data)
 ```
+
+## Results
+```{r}
+pcr_data |> 
+    dplyr::distinct(sample_name, target_name, .keep_all = TRUE) |> 
+    dplyr::select(sample_name, target_name, batch_name, regression_type, x_mid, slope, delta, result) |> 
+    knitr::kable(format = "html", caption = "OA Results") |> 
+    kableExtra::kable_styling(
+        bootstrap_options = c("striped", "hover", "condensed"),
+        full_width = TRUE,
+        position = "center"
+    )
+```
