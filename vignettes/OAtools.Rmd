@@ -27,18 +27,19 @@ Highly multiplex PCR platforms enable drastically greater throughput compared
 to traditional PCR methods, making them critical for pathogen detection and 
 gene expression experiments in public health and clinical research environments.
 One such platform is ThermoFisher Scientific's OpenArray Technology, which our 
-lab uses to screen patients swabs for respiratory viral infection. With 3000+ 
+lab uses to screen patient swabs for respiratory viral infection. With 3000+ 
 qPCR reactions taking place on each OpenArray plate, the sheer volume of data 
 produced requires an informatic solution for downstream analyses and reporting.
 
 ThermoFisher provides the proprietary QuantStudio 12K Flex Software and the 
-Relative Quantification Application for the data analysis. However, no 
-open-source software exists for the wrangling and analysis of OpenArray gene 
-expression data. To bridge the gap, OAtools streamlines the analysis process 
-from the initial cleaning steps to communication of results through an R 
-Markdown document. Our goal in sharing OAtools is to support open-source 
-and shareable analyses of OpenArray gene expression data, especially in 
-clinical research environments.
+Relative Quantification Application for the data analysis. However, to our 
+knowledge, no all-in-one open-source software exists to derive cycle thresholds
+and sample results from raw fluroescence curves measured on the OpenArray 
+platform. To bridge the gap, OAtools streamlines the analysis process 
+including data import, quality control plots, analysis, and communication
+through an R Markdown document. Our goal in sharing OAtools is to support 
+open-source and shareable analyses of OpenArray gene expression data, 
+especially in clinical research environments.
 
 ## Installation
 
