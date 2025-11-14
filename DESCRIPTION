@@ -1,16 +1,20 @@
 Package: OAtools
-Title: What the Package Does (One Line, Title Case)
+Title: Analysis of OpenArray qPCR Data
 Version: 0.99.0
+Description: Provides an automated pipeline to analyze gene expression 
+    experiments on the OpenArray real-time PCR platform. OAtools fits
+    logistic regressions to fluorescence curves to distinguish between 
+    real amplification and false positives. OAtools supports data import, 
+    analysis, and visualization through plots and a dynamic .html report.
 Authors@R: 
     person("Aidan", "Shea", 
     email = "aidantshea@gmail.com", 
     role = c("aut", "cre"),
     comment = c(ORCID = "0009-0001-9256-7439"))
-Description: What the package does (one paragraph).
-License: MIT + file LICENSE
-Encoding: UTF-8
-Roxygen: list(markdown = TRUE)
-RoxygenNote: 7.3.3
+License: GPL (>= 3)
+LazyData: FALSE
+Depends: 
+    R (>= 4.5)
 Imports: 
     basilisk (>= 1.20.0),
     dplyr (>= 1.1.4),
@@ -25,15 +29,17 @@ Imports:
     tibble (>= 3.3.0),
     tidyr (>= 1.3.1),
     tidyselect (>= 1.2.1)
-Depends: 
-    R (>= 4.5)
 Suggests: 
     BiocStyle,
     kableExtra (>= 1.4.0),
     knitr,
     testthat (>= 3.0.0)
-Config/testthat/edition: 3
-VignetteBuilder: knitr
 biocViews: qPCR, GeneExpression, Regression
-URL: https://github.com/uwvirology-ngs/OAtools
 BugReports: https://github.com/uwvirology-ngs/OAtools/issues
+URL: https://github.com/uwvirology-ngs/OAtools
+BiocType: Software
+Config/testthat/edition: 3
+Roxygen: list(markdown = TRUE)
+RoxygenNote: 7.3.3
+Encoding: UTF-8
+VignetteBuilder: knitr
