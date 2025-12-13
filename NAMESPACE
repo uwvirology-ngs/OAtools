@@ -2,6 +2,7 @@
 
 export(append_fit_results)
 export(assign_calls_with_key)
+export(excel_to_summarized_experiment)
 export(format_results)
 export(generate_report)
 export(plot_crt)
