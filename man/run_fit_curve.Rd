@@ -23,9 +23,3 @@ to fit two-dimensional multicomponent fluorescence vs. cycle number data to
 a 5-parameter logistic regression. For reactions with a total change in
 fluorescence below the linear_threshold, returns instead a linear regression
 }
-\examples{
-data(tidy_run_data)
-data <- dplyr::filter(tidy_run_data, well == 2794)
-
-curve <- run_fit_curve(data, linear_threshold = 400)
-}
