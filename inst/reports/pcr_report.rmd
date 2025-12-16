@@ -54,7 +54,7 @@ OAtools::plot_crt(pcr_data)
 ```{r}
 pcr_data |> 
     dplyr::distinct(sample_name, target_name, .keep_all = TRUE) |> 
-    dplyr::select(sample_name, target_name, regression_type, x_mid, slope, delta, result) |> 
+    dplyr::select(sample_name, target_name, crt) |> 
     knitr::kable(format = "html", caption = "OA Results") |> 
     kableExtra::kable_styling(
         bootstrap_options = c("striped", "hover", "condensed"),

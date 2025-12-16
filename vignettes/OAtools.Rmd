@@ -81,10 +81,10 @@ which is frequently high in qPCR curves.
 ### Method 1 - Relative Threshold
 
 To start, load example run data included in the package and assign it to a 
-variable as below. The tidy_gene_expression_data() function then transforms 
+variable as below. The excel_to_summarized_experiment() function transforms 
 the raw data output in .xlsx format from QuantStudio 12K Flex software into a 
-Tidyverse-friendly tibble object, which is the intended input for downstream 
-functions. As there are 40 cycles in each unique qPCR reaction, the tibble 
+SummarizedExperiment class object, which is the intended input for downstream 
+functions. As there are 40 cycles in each unique qPCR reaction, the rowData 
 stored 40 rows for each. The code below demonstrates this workflow and shows 
 a slice of one of the positive fluorescence curves.
 
@@ -96,14 +96,14 @@ path = system.file(
     package = "OAtools"
 )
 
-# transform the run data into a tibble
-tidy_run_data <- tidy_gene_expression_data(path = path, num_results = 96)
+# transform the run data into a SummarizedExperiment
+se <- excel_to_summarized_experiment(path = path, num_results = 96)
+run_data <- as.data.frame(SummarizedExperiment::colData(se))
 
-# print a slice of the tibble
-tidy_run_data |> 
-    dplyr::select(well, sample_name:fam) |> 
-    dplyr::filter(well == 2345) |>
-    dplyr::slice(10:20) |> 
+# print a slice of the SummarizedExperiment
+run_data |> 
+    dplyr::select(well, sample_name, target_name, crt, amp_score:amp_status) |> 
+    dplyr::slice(1:10) |> 
     knitr::kable(format = "markdown")
 ```
 
@@ -113,12 +113,12 @@ an html report and saves it to the working directory.
 
 ```{r method1-report_data, eval=FALSE}
 # generate a .html report from the tidy_run_data
-generate_report(data = tidy_run_data, path = ".", analysis = 'native')
+generate_report_from_se(se = se, path = ".")
 ```
 
 ### Method 2 - Curve Fitting
 
-If we intend to employ the curve-fitting approach to analyze the data, the 
+If we intend to use the curve-fitting approach to analyze the data, the 
 initial step of loading the run data into tibble format is the same.
 
 ```{r method2-load_data}
@@ -129,15 +129,15 @@ path = system.file(
     package = "OAtools"
 )
 
-# transform the run data into a tibble
-tidy_run_data <- tidy_gene_expression_data(path = path, num_results = 96)
+# transform the run data into a SummarizedExperiment
+se <- excel_to_summarized_experiment(path = path, num_results = 96)
 ```
 
 However, we must now optimize the 5-parameter logistic regression to each 
-fluorescence curve and add extracted features to the tibble. The 
-append_fit_results() function adds extracted features such as the overall 
+fluorescence curve and add extracted features to the data. The 
+fit_models_to_se() function adds extracted features such as the overall 
 change-in-fluorescence and the slope at the midpoint of the reaction to the 
-input tibble. This function is powered by SciPy for model optimization and is 
+input data. This function is powered by SciPy for model optimization and is 
 the most computationally expensive of the package, so it may take a moment to 
 run. To speed up processing and prevent overflow errors, reactions with 
 overall change-in-fluorescence below the linear_threshold parameter are 
@@ -145,12 +145,13 @@ considered trivially negative and fit to linear models instead.
 
 ```{r method2-modify_data}
 # optimize 5PL/linear models to each curve and append to the dataset
-curve_fit_data <- append_fit_results(
-    data = tidy_run_data, 
-    linear_threshold = 400
+se <- fit_models_to_se(
+    se = se,
+    linear_threshold = 500
 )
 
 # print a snapshot of the dataset collapsed to unique reactions
+curve_fit_data <- as.data.frame(SummarizedExperiment::colData(se))
 curve_fit_data |> 
     dplyr::select(
         well, 
@@ -164,7 +165,7 @@ curve_fit_data |>
 ```
 
 The next step is to assign results based off of the extracted features. The 
-assign_calls_with_key() function accepts a .xlsx file that associates each 
+assign_calls_to_se() function accepts a .xlsx file that associates each 
 assay target with user-selected thresholds for cycle threshold, midpoint 
 slope, and overall change-in-fluorescence that determine whether amplification 
 in the well is interpreted as positive or negative. For more details, 
@@ -179,26 +180,18 @@ key_path = system.file(
 )
 
 # assign results based on the key and append to the data frame
-result_data <- assign_calls_with_key(
-    data = curve_fit_data, 
+se <- assign_calls_to_se(
+    se = se, 
     key_path = key_path
 )
 
 # print a snapshot including the logic for determining the result
+result_data <- as.data.frame(SummarizedExperiment::colData(se))
 result_data |> 
     dplyr::select(well, x_mid:delta, slope_threshold:crt_threshold, result) |> 
     dplyr::distinct(well, .keep_all = TRUE) |> 
     dplyr::slice_head(n = 10) |> 
     knitr::kable(format = "markdown")
-```
-
-Once calls are populated into the results column, the workflow ends as before, 
-with generation of a report document. This time, the analysis parameter is set 
-to the 'curve-fitting' option.
-
-```{r method2-report_data, eval=FALSE}
-# generate a .html report from the tidy_run_data
-generate_report(data = result_data, path = ".", analysis = 'curve-fitting')
 ```
 
 ```{r sessionInfo}
