@@ -16,3 +16,7 @@ a ggplot2 figure
 Generates a box and whisker plot to visualize the distribution of observed
 Crt values for each assay target in an OpenArray plate.
 }
+\examples{
+data(example_se)
+plot_crt_from_se(example_se)
+}

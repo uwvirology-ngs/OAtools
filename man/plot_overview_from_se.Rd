@@ -16,3 +16,7 @@ a ggplot2 figure
 This function generates a heat map summarizing the amplification status
 results for each sample on the OpenArray plate by target gene.
 }
+\examples{
+data(example_se)
+plot_overview_from_se(example_se)
+}

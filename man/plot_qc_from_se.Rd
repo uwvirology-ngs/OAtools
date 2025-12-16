@@ -17,3 +17,7 @@ Generates a 3-dimensional quality control plot comparing the amplification
 status to the crt, Cq conf, and amplification score metrics output by
 QuantStudio 12K Flex Software.
 }
+\examples{
+data(example_se)
+plot_qc_from_se(example_se)
+}

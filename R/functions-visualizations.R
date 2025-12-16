@@ -116,6 +116,8 @@ plot_overview <- function(  data, sample_list = NA, target_list = NA,
 #' @export
 #'
 #' @examples
+#' data(example_se)
+#' plot_overview_from_se(example_se)
 plot_overview_from_se <- function(se) {
     
     # load in and format se to Data Frame
@@ -231,6 +233,8 @@ plot_qc <- function(data, batch = NA)
 #' @export
 #'
 #' @examples
+#' data(example_se)
+#' plot_qc_from_se(example_se)
 plot_qc_from_se <- function(se) {
     data <- as.data.frame(SummarizedExperiment::colData(se))
         
@@ -337,6 +341,8 @@ plot_crt <- function(data, batch = NA) {
 #' @export
 #'
 #' @examples
+#' data(example_se)
+#' plot_crt_from_se(example_se)
 plot_crt_from_se <- function(se) {
     data <- as.data.frame(SummarizedExperiment::colData(se))
     
