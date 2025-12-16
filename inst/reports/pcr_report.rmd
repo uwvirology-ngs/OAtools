@@ -4,7 +4,6 @@ date: "`r Sys.Date()`"
 output: html_document
 params:
     data_path: NULL
-    analysis: NULL
 ---
 
 ```{r include = FALSE}
@@ -13,25 +12,13 @@ knitr::opts_chunk$set(echo=FALSE)
 
 ```{r}
 # load in data
-pcr_data <- readRDS(params$data_path)
+se <- readRDS(params$data_path)
+pcr_data <- as.data.frame(SummarizedExperiment::colData(se))
 ```
 
 ## Narrative
 
 This report document consolidates run information and QC plots generated from multiplex qPCR data following OpenArray gene expression runs. This document supplements, but does not replace, the tabulated analyzed data output by the core pipeline.
-
-### Batches
-
-```{r}
-batches <- levels(pcr_data$batch_name)
-```
-
-There are `r length(batches)` OpenArray plates included in this report. The batch names are:
-```{r}
-for (batch in batches) {
-  print(batch)
-}
-```
 
 ## Graphics
 
@@ -42,7 +29,7 @@ This graphic plots each qPCR reaction against the 'Crt', 'Amp Score', and 'Cq Co
 For ideal sensitivity and specificity, an amplification score of 1.2 or greater and a Cq confidence of 0.7 or greater is often expected, though the particular thresholds may vary by assay. If a significant proportion of reactions fail to clear these metrics, and the assay is known to generally perform well, an issue with the run should be suspected. Results with a Crt of 28 or higher may represent false positives, and are best interpreted by manual review or sigmoidal curve-fitting. 
 
 ```{r, fig.align='center'}
-OAtools::plot_qc(data = pcr_data)
+OAtools::plot_qc(pcr_data)
 ```
 
 ### Amplification Overview
@@ -51,28 +38,23 @@ Here we summarize the amplification status of each sample per assay in heat map 
 
 It is best to ensure here that control material is positive for all expected assays and negative for all other assays, respectively. Control material positive for unexpected assays may indicate off-target amplification effects or potential cross-contamination.
 
-```{r, fig.width=nlevels(pcr_data$target_name)*3, fig.height=nlevels(pcr_data$sample_name)/2, fig.align='center'}
-OAtools::plot_overview(
-  data = pcr_data,
-  sample_list = levels(pcr_data$sample_name),
-  target_list = levels(pcr_data$target_name),
-  analysis = analysis
-)
+```{r}
+OAtools::plot_overview(pcr_data)
 ```
 
 ### Crt Distribution
 
 Here is displayed the distribution of observed Crt values by assay target. In general, an approximately normal distribution of Crt values is expected for each assay target over large numbers of samples. Extreme outliers may indicate the need for manual review.
 
-```{r, fig.height=nlevels(pcr_data$target_name), fig.align='center'}
-OAtools::plot_crt(data = pcr_data)
+```{r}
+OAtools::plot_crt(pcr_data)
 ```
 
 ## Results
 ```{r}
 pcr_data |> 
     dplyr::distinct(sample_name, target_name, .keep_all = TRUE) |> 
-    dplyr::select(sample_name, target_name, batch_name, regression_type, x_mid, slope, delta, result) |> 
+    dplyr::select(sample_name, target_name, regression_type, x_mid, slope, delta, result) |> 
     knitr::kable(format = "html", caption = "OA Results") |> 
     kableExtra::kable_styling(
         bootstrap_options = c("striped", "hover", "condensed"),
