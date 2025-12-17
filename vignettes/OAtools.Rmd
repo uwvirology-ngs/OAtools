@@ -84,7 +84,7 @@ parameters.
 ### Method 1 - Relative Threshold Analysis
 
 To start, we specify the filepath to some example OpenArray qPCR run data, 
-which is included with the package. This data is a slice from a gene expression
+which is included with the package. This data is a sample from a gene expression
 experiment our lab, the University of Washington Virology Lab, ran on human 
 nasal swabs to screen for respiratory pathogens. 
 
@@ -113,17 +113,48 @@ se <- excel_to_summarized_experiment(
 With the data loaded into a SummarizedExperiment container, we can review its 
 structure. The assay matrix stores the observed fluorescence values measured
 by the QuantStudio 12K Flex thermocycler for every cycle within each 
-though-hole on the OpenArray plate. 
+though-hole on the OpenArray plate. We may access the assay matrix from 
+our SummarizedExperiment object by invoking `assay(se)` and coercing 
+the assay matrix into a dataframe with `as.data.frame()`.
+
+If we want to be more explicit, we can also call `assays(se)$fluo` to retrieve 
+the observed fluorescence values, which is useful when we add more assay 
+matrices downstream. Here we display a slice of the fluorescence data from 
+cycles 11 to 20; notice that the rows represent cycle number and the columns 
+represent individual through-holes on the OpenArray plate. 
 
 ```{r method1-2}
+as.data.frame(assays(se)$fluo) |> 
+    dplyr::select(well_2321:well_2386) |>
+    dplyr::slice(11:20) |> 
+    knitr::kable(format = "markdown")
+```
+
+Other than raw fluorescence values, data associated with each PCR reaction 
+on the OpenArray plate are stored in the colData of the SummarizedExperiment. 
+We can access the colData with `as.data.frame(colData(se))`, again coercing 
+to a data frame to display. Information stored here includes PCR results in the
+form of a Crt and an Amp Score, metadata such as reporter dye and quencher, 
+and QC metrics like Amp Score and Cq Conf. 
+
+In particular, the Crt is a relative threshold value, which is anologous to a 
+Ct value in a typical qPCR assay. The Amp Score is the final result assigned 
+to the well automatically by QuantStudio 12K Flex Software. Here we display
+a selection of the colData associated with the first 10 wells. 
+
+```{r method1-3}
 run_data <- as.data.frame(colData(se))
 
 # print a slice of the SummarizedExperiment
 run_data |> 
-    dplyr::select(well, sample_name, target_name, crt, amp_score:amp_status) |> 
+    dplyr::select(
+        well, sample_name:target_name, reporter, crt, amp_score:amp_status) |> 
     dplyr::slice(1:10) |> 
     knitr::kable(format = "markdown")
 ```
+
+By contrast, the rowData stores only the cycle numbers, which is less 
+interesting by itself. 
 
 If we intend to use the relative threshold analysis native to the instrument 
 software, we can generate a run result report directly. This line generates 
