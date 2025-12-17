@@ -17,6 +17,15 @@ utils::globalVariables("fit_curve")
 #' @export
 #'
 #' @examples
+#' data(example_se)
+#' 
+#' df <- as.data.frame(SummarizedExperiment::assay(example_se)) |> 
+#'     dplyr::select(well_2385)
+#' 
+#' model <- data.frame(
+#'     cycle = as.integer(sub("cycle_", "", rownames(df))),
+#'     fam = as.numeric(df$well_2385)
+#' )
 run_fit_curve <- function(data, linear_threshold) {
     basilisk::basiliskRun(
         env = OAtools_env,

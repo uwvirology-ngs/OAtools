@@ -23,3 +23,14 @@ to fit two-dimensional multicomponent fluorescence vs. cycle number data to
 a 5-parameter logistic regression. For reactions with a total change in
 fluorescence below the linear_threshold, returns instead a linear regression
 }
+\examples{
+data(example_se)
+
+df <- as.data.frame(SummarizedExperiment::assay(example_se)) |> 
+    dplyr::select(well_2385)
+
+model <- data.frame(
+    cycle = as.integer(sub("cycle_", "", rownames(df))),
+    fam = as.numeric(df$well_2385)
+)
+}
