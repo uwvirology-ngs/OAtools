@@ -3,7 +3,7 @@
 export(assign_calls_to_se)
 export(excel_to_summarized_experiment)
 export(fit_models_to_se)
-export(generate_report_from_se)
+export(generate_report)
 export(plot_crt)
 export(plot_overview)
 export(plot_qc)

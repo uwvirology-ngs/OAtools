@@ -10,7 +10,9 @@
 #' @export
 #'
 #' @examples
-generate_report_from_se <- function(se, path) {
+#' data(example_se)
+#' generate_report(se = example_se, path = file.path("..", "report"))
+generate_report <- function(se, path) {
     
     data_file <- tempfile(fileext = ".rds")
     saveRDS(se, data_file)
