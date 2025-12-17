@@ -19,6 +19,7 @@ knitr::opts_chunk$set(
 
 ```{r libraries, include=FALSE}
 library(OAtools)
+library(SummarizedExperiment)
 ```
 
 ## Introduction
@@ -27,19 +28,20 @@ Highly multiplex PCR platforms enable drastically greater throughput compared
 to traditional PCR methods, making them critical for pathogen detection and 
 gene expression experiments in public health and clinical research environments.
 One such platform is ThermoFisher Scientific's OpenArray Technology, which our 
-lab uses to screen patient swabs for respiratory viral infection. With 3000+ 
+lab uses to screen patient swabs for respiratory viral infections. With 3000+ 
 qPCR reactions taking place on each OpenArray plate, the sheer volume of data 
 produced requires an informatic solution for downstream analyses and reporting.
 
 ThermoFisher provides the proprietary QuantStudio 12K Flex Software and the 
-Relative Quantification Application for the data analysis. However, to our 
-knowledge, no all-in-one open-source software exists to derive cycle thresholds
-and sample results from raw fluroescence curves measured on the OpenArray 
-platform. To bridge the gap, OAtools streamlines the analysis process 
-including data import, quality control plots, analysis, and communication
-through an R Markdown document. Our goal in sharing OAtools is to support 
-open-source and shareable analyses of OpenArray gene expression data, 
-especially in clinical research environments.
+Relative Quantification Application for data analysis. However, no all-in-one
+open-source software exists to derive reportable results from raw fluorescence 
+values measured on OpenArray.
+
+To bridge the gap, OAtools streamlines the analysis process including data 
+import, plotting and quality control, analysis, and communication through an 
+R Markdown document. Our goal in sharing OAtools is to support open-source and 
+shareable analyses of OpenArray gene expression data, especially in clinical 
+research environments.
 
 ## Installation
 
@@ -70,23 +72,28 @@ BiocManager::install("OAtools")
 
 ### Overview
 
-*OAtools* supports two major methods of data analysis for OpenArray qPCR 
-reactions. The first method is to carry over the relative threshold analysis 
-native to the QuantStudio 12K Flex Software. The second method, our open-source 
-option, is to fit a logistic model to each fluorescence curve and categorize 
-reactions based on the features of the model curve. In particular, *OAtools* 
-applies the 5-parameter logistic model as it accounts for curve asymmetry, 
-which is frequently high in qPCR curves.
+*OAtools* supports two core methods for analyzing OpenArray qPCR data:
 
-### Method 1 - Relative Threshold
+1.) The first method is to simply carry over the relative threshold analysis 
+native to the QuantStudio 12K Flex Software.
 
-To start, load example run data included in the package and assign it to a 
-variable as below. The excel_to_summarized_experiment() function transforms 
-the raw data output in .xlsx format from QuantStudio 12K Flex software into a 
-SummarizedExperiment class object, which is the intended input for downstream 
-functions. As there are 40 cycles in each unique qPCR reaction, the rowData 
-stored 40 rows for each. The code below demonstrates this workflow and shows 
-a slice of one of the positive fluorescence curves.
+2.) The second method is to fit a logistic model to the fluroescence vs. cycle 
+data for each individual well, then determine PCR results based on the model 
+parameters.
+
+### Method 1 - Relative Threshold Analysis
+
+To start, we specify the filepath to some example OpenArray qPCR run data, 
+which is included with the package. This data is a slice from a gene expression
+experiment our lab, the University of Washington Virology Lab, ran on human 
+nasal swabs to screen for respiratory pathogens. 
+
+With the filepath specified, we use the excel_to_summarized_experiment() 
+function to read the .xlsx file containing the run data and load it into a 
+SummarizedExperiment object. SummarizedExperiment is an S4 Class from 
+Bioconductor used to stored matrix-like assay data and associated metadata. Note
+that we specify the number of rows to read from the 'Results' tab of the .xlsx 
+file with the num_results parameter. 
 
 ```{r method1-load_data}
 # save filepath to example OpenArray gene expression run data
@@ -97,8 +104,19 @@ path = system.file(
 )
 
 # transform the run data into a SummarizedExperiment
-se <- excel_to_summarized_experiment(path = path, num_results = 96)
-run_data <- as.data.frame(SummarizedExperiment::colData(se))
+se <- excel_to_summarized_experiment(
+    path = path, 
+    num_results = 96
+)
+```
+
+With the data loaded into a SummarizedExperiment container, we can review its 
+structure. The assay matrix stores the observed fluorescence values measured
+by the QuantStudio 12K Flex thermocycler for every cycle within each 
+though-hole on the OpenArray plate. 
+
+```{r method1-2}
+run_data <- as.data.frame(colData(se))
 
 # print a slice of the SummarizedExperiment
 run_data |> 
