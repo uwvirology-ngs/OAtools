@@ -185,7 +185,7 @@ code to save the report directly to the user's machine.
 
 ```{r reporting-results, eval=FALSE}
 # generate a .html report from the run data
-generate_report_from_se(se = se, path = ".")
+generate_report(se = se, path = ".")
 ```
 
 ## Analysis by Logistic Regression
