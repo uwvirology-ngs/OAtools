@@ -231,22 +231,21 @@ handle when attempting to fit a model. Thus, it saves on compute time to
 automatically filter out such curves. 
 
 ```{r method2-modify_data}
-# optimize 5PL/linear models to each curve and append to the dataset
+# optimize model curves to each PCR reaction append model parameters and
+# features to the SummarizedExperiment
 se <- fit_models_to_se(
     se = se,
     linear_threshold = 500
 )
 
-# print a snapshot of the dataset collapsed to unique reactions
-curve_fit_data <- as.data.frame(SummarizedExperiment::colData(se))
-curve_fit_data |> 
+# render a snapshot of the coldata collapsed to unique reactions
+as.data.frame(SummarizedExperiment::colData(se)) |> 
     dplyr::select(
         well, 
         sample_name:target_name, 
         regression_type, 
         x_mid:delta
     ) |> 
-    dplyr::distinct(well, .keep_all = TRUE) |> 
     dplyr::slice_head(n = 10) |> 
     knitr::kable(format = "markdown")
 ```
