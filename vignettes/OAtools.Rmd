@@ -123,7 +123,8 @@ matrices downstream. Here we display a slice of the fluorescence data from
 cycles 11 to 20; notice that the rows represent cycle number and the columns 
 represent individual through-holes on the OpenArray plate. 
 
-```{r method1-2}
+```{r method1-assay_matrix}
+# retrieve the assay matrix and display a subset as a data frame
 as.data.frame(assays(se)$fluo) |> 
     dplyr::select(well_2321:well_2386) |>
     dplyr::slice(11:20) |> 
@@ -142,11 +143,9 @@ Ct value in a typical qPCR assay. The Amp Score is the final result assigned
 to the well automatically by QuantStudio 12K Flex Software. Here we display
 a selection of the colData associated with the first 10 wells. 
 
-```{r method1-3}
-run_data <- as.data.frame(colData(se))
-
-# print a slice of the SummarizedExperiment
-run_data |> 
+```{r method1-coldata}
+# retrieve the coldata and render a subset as a data frame
+as.data.frame(colData(se)) |> 
     dplyr::select(
         well, sample_name:target_name, reporter, crt, amp_score:amp_status) |> 
     dplyr::slice(1:10) |> 
@@ -156,12 +155,25 @@ run_data |>
 By contrast, the rowData stores only the cycle numbers, which is less 
 interesting by itself. 
 
-If we intend to use the relative threshold analysis native to the instrument 
-software, we can generate a run result report directly. This line generates 
-an html report and saves it to the working directory.
+```{r method1-rowdata}
+# retrieve the rowdata and render a subset as a data frame
+as.data.frame(rowData(se)) |> 
+    dplyr::slice(1:10) |> 
+    knitr::kable(format = "markdown")
+```
 
-```{r method1-report_data, eval=FALSE}
-# generate a .html report from the tidy_run_data
+If we intend to use the relative threshold analysis native to the instrument 
+software, we can create a run result report straight away. We can call the 
+`generate_report()` function directly on the Summarized Experiment, which then 
+dynamically generates a .html document summarizing the results. 
+
+The following code block would generate a run report assuming the data has been
+loaded in using `excel_to_summarized_experiment()`. Note that it does not 
+automatically execute when constructing this vignette as the function calls 
+code to save the report directly to the user's machine. 
+
+```{r method1-report, eval=FALSE}
+# generate a .html report from the run data
 generate_report_from_se(se = se, path = ".")
 ```
 
