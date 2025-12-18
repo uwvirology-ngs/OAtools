@@ -179,10 +179,22 @@ generate_report_from_se(se = se, path = ".")
 
 ### Method 2 - Curve Fitting
 
-If we intend to use the curve-fitting approach to analyze the data, the 
-initial step of loading the run data into tibble format is the same.
+In alignment with open science and reproducible data analyses, OAtools supports 
+an alternative method to derive sample results by fitting logistic models to 
+the fluorescence curves of each PCR reaction on the OpenArray plate. The 
+parameters of the model curve can be used to determine the result of each PCR 
+reaction. In particular, OAtools implements an algorithm from SciPy to fit a 
+5-parameter logistic regression to each fluorescence curve; we chose the 5PL 
+model for its ability to handle asymmetries common to PCR curves. 
+
+Here we start the data analysis again from the point where we have exported 
+the gene expression experiment from QuantStudio 12K Flex software. As in the 
+previous example, we load the experiment into a SummarizedExperiment object. 
 
 ```{r method2-load_data}
+# clear the environment
+rm(list = ls())
+
 # save filepath to example OpenArray gene expression run data
 path = system.file(
     "extdata", 
