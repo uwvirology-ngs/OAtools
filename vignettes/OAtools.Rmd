@@ -72,9 +72,7 @@ if (!require("BiocManager", quietly = TRUE)) {
 BiocManager::install("OAtools")
 ```
 
-## General Workflow
-
-### Overview
+## Workflow Overview
 
 *OAtools* supports two core methods for analyzing OpenArray qPCR data:
 
@@ -85,7 +83,7 @@ native to the QuantStudio 12K Flex Software.
 data for each individual well, then determine PCR results based on the model 
 parameters.
 
-### Method 1 - Relative Threshold Analysis
+## Import to SummarizedExperiment
 
 To start, we specify the filepath to some example OpenArray qPCR run data, 
 which is included with the package. This data is a sample from a gene expression
@@ -114,6 +112,10 @@ se <- excel_to_summarized_experiment(
 )
 ```
 
+## Experiment Structure
+
+### Assay Matrix
+
 With the data loaded into a SummarizedExperiment container, we can review its 
 structure. The assay matrix stores the observed fluorescence values measured
 by the QuantStudio 12K Flex thermocycler for every cycle within each 
@@ -134,6 +136,8 @@ as.data.frame(assays(se)$fluo) |>
     dplyr::slice(11:20) |> 
     knitr::kable(format = "markdown")
 ```
+
+### Coldata
 
 Other than raw fluorescence values, data associated with each PCR reaction 
 on the OpenArray plate are stored in the colData of the SummarizedExperiment. 
@@ -156,6 +160,8 @@ as.data.frame(colData(se)) |>
     knitr::kable(format = "markdown")
 ```
 
+### Rowdata
+
 By contrast, the rowData stores only the cycle numbers, which is less 
 interesting by itself. 
 
@@ -165,6 +171,8 @@ as.data.frame(rowData(se)) |>
     dplyr::slice(1:10) |> 
     knitr::kable(format = "markdown")
 ```
+
+## Reporting Results
 
 If we intend to use the relative threshold analysis native to the instrument 
 software, we can create a run result report straight away. We can call the 
@@ -181,7 +189,7 @@ code to save the report directly to the user's machine.
 generate_report_from_se(se = se, path = ".")
 ```
 
-### Method 2 - Curve Fitting
+## Analysis by Logistic Regression
 
 In alignment with open science and reproducible data analyses, OAtools supports 
 an alternative method to derive sample results by fitting logistic models to 
@@ -190,6 +198,8 @@ parameters of the model curve can be used to determine the result of each PCR
 reaction. In particular, OAtools implements an algorithm from SciPy to fit a 
 5-parameter logistic regression to each fluorescence curve; we chose the 5PL 
 model for its ability to handle asymmetries common to PCR curves. 
+
+### Data Import
 
 Here we start the data analysis again from the point where we have exported 
 the gene expression experiment from QuantStudio 12K Flex software. As in the 
@@ -209,6 +219,8 @@ path = system.file(
 # transform the run data into a SummarizedExperiment
 se <- excel_to_summarized_experiment(path = path, num_results = 96)
 ```
+
+### Optimizing Models to PCR Curves
 
 The next step is to run the optimizer and fit a 5PL model curve to each PCR 
 reaction on the OpenArray plate. OAtools exports the `fit_models_to_se()`
@@ -254,6 +266,8 @@ as.data.frame(SummarizedExperiment::colData(se)) |>
     knitr::kable(format = "markdown")
 ```
 
+### Deriving PCR Results from the Model
+
 The next step is to use the model parameters and features we've retrieved to 
 derive PCR results. We can invoke the `assign_calls_to_se()` function on our
 SummarizedExperiment to do this programmatically. `assign_calls_to_se()` 
@@ -293,7 +307,7 @@ as.data.frame(SummarizedExperiment::colData(se)) |>
     knitr::kable(format = "markdown")
 ```
 
-Session Info:
+## Session Info
 ```{r sessionInfo}
 sessionInfo()
 ```
