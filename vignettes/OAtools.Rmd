@@ -8,6 +8,7 @@ output:
     toc: true
     toc_float: true
     fig_width: 5
+    df_print: kable
 vignette: >
   %\VignetteIndexEntry{Analyzing OpenArray Gene Expression Data with OAtools}
   %\VignetteEngine{knitr::rmarkdown}
@@ -133,8 +134,7 @@ represent individual through-holes on the OpenArray plate.
 # retrieve the assay matrix and display a subset as a data frame
 as.data.frame(assays(se)$fluo) |> 
     dplyr::select(well_2321:well_2386) |>
-    dplyr::slice(11:20) |> 
-    knitr::kable(format = "markdown")
+    dplyr::slice(11:20)
 ```
 
 ### Coldata
@@ -155,9 +155,9 @@ a selection of the colData associated with the first 10 wells.
 # retrieve the coldata and render a subset as a data frame
 as.data.frame(colData(se)) |> 
     dplyr::select(
-        well, sample_name:target_name, reporter, crt, amp_score:amp_status) |> 
-    dplyr::slice(1:10) |> 
-    knitr::kable(format = "markdown")
+        well, sample_name:target_name, reporter, crt, amp_score:amp_status
+    ) |> 
+    dplyr::slice(1:10)
 ```
 
 ### Rowdata
@@ -168,8 +168,7 @@ interesting by itself.
 ```{r method1-rowdata}
 # retrieve the rowdata and render a subset as a data frame
 as.data.frame(rowData(se)) |> 
-    dplyr::slice(1:10) |> 
-    knitr::kable(format = "markdown")
+    dplyr::slice(1:10)
 ```
 
 ## Reporting Results
@@ -262,8 +261,7 @@ as.data.frame(SummarizedExperiment::colData(se)) |>
         regression_type, 
         x_mid:delta
     ) |> 
-    dplyr::slice_head(n = 10) |> 
-    knitr::kable(format = "markdown")
+    dplyr::slice_head(n = 10)
 ```
 
 ### Deriving PCR Results from the Model
@@ -303,8 +301,7 @@ se <- assign_calls_to_se(
 # render a snapshot including the logic for determining the result
 as.data.frame(SummarizedExperiment::colData(se)) |> 
     dplyr::select(well, x_mid:delta, slope_threshold:crt_threshold, result) |> 
-    dplyr::slice_head(n = 10) |> 
-    knitr::kable(format = "markdown")
+    dplyr::slice_head(n = 10)
 ```
 
 ## Session Info
