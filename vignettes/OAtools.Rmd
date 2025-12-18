@@ -1,11 +1,15 @@
 ---
-title: "OAtools"
-output: 
-  BiocStyle::html_document:
+title: "Analyzing OpenArray Gene Expression Data with OAtools"
+author: "Aidan Shea"
+date: "`r Sys.Date()`"
+output:
+  rmarkdown::html_document:
+    highlight: pygments
     toc: true
-    toc_depth: 2
+    toc_float: true
+    fig_width: 5
 vignette: >
-  %\VignetteIndexEntry{1. OAtools}
+  %\VignetteIndexEntry{Analyzing OpenArray Gene Expression Data with OAtools}
   %\VignetteEngine{knitr::rmarkdown}
   %\VignetteEncoding{UTF-8}
 ---
