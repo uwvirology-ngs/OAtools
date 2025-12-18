@@ -54,7 +54,7 @@ To install the development version of *OAtools* directly from the
 uwvirology-ngs public GitHub, (<https://github.com/uwvirology-ngs/OAtools>) 
 run the commands below in your R console:
 
-```{r pak-install, eval=FALSE}
+```{r installation-pak, eval=FALSE}
 # install OAtools from the uwvirology-ngs GitHub
 pak::pak("uwvirology-ngs/OAtools")
 ```
@@ -63,7 +63,7 @@ Our lab plans to share this project as a Bioconductor package. Once available,
 this package may be installed from Bioconductor by running the following 
 commands in the R console:
 
-```{r bioconductor-install, eval=FALSE}
+```{r installation-bioconductor, eval=FALSE}
 # if needed, install Bioconductor
 if (!require("BiocManager", quietly = TRUE)) {
     install.packages("BiocManager")
@@ -98,7 +98,7 @@ Bioconductor used to stored matrix-like assay data and associated metadata. Note
 that we specify the number of rows to read from the 'Results' tab of the .xlsx 
 file with the num_results parameter. 
 
-```{r method1-load_data}
+```{r data_import}
 # save filepath to example OpenArray gene expression run data
 path = system.file(
     "extdata", 
@@ -130,7 +130,7 @@ matrices downstream. Here we display a slice of the fluorescence data from
 cycles 11 to 20; notice that the rows represent cycle number and the columns 
 represent individual through-holes on the OpenArray plate. 
 
-```{r method1-assay_matrix}
+```{r structure-assay_matrix}
 # retrieve the assay matrix and display a subset as a data frame
 as.data.frame(assays(se)$fluo) |> 
     dplyr::select(well_2321:well_2386) |>
@@ -151,7 +151,7 @@ Ct value in a typical qPCR assay. The Amp Score is the final result assigned
 to the well automatically by QuantStudio 12K Flex Software. Here we display
 a selection of the colData associated with the first 10 wells. 
 
-```{r method1-coldata}
+```{r structure-coldata}
 # retrieve the coldata and render a subset as a data frame
 as.data.frame(colData(se)) |> 
     dplyr::select(
@@ -165,7 +165,7 @@ as.data.frame(colData(se)) |>
 By contrast, the rowData stores only the cycle numbers, which is less 
 interesting by itself. 
 
-```{r method1-rowdata}
+```{r structure-rowdata}
 # retrieve the rowdata and render a subset as a data frame
 as.data.frame(rowData(se)) |> 
     dplyr::slice(1:10)
@@ -183,7 +183,7 @@ loaded in using `excel_to_summarized_experiment()`. Note that it does not
 automatically execute when constructing this vignette as the function calls 
 code to save the report directly to the user's machine. 
 
-```{r method1-report, eval=FALSE}
+```{r reporting-results, eval=FALSE}
 # generate a .html report from the run data
 generate_report_from_se(se = se, path = ".")
 ```
@@ -204,7 +204,7 @@ Here we start the data analysis again from the point where we have exported
 the gene expression experiment from QuantStudio 12K Flex software. As in the 
 previous example, we load the experiment into a SummarizedExperiment object. 
 
-```{r method2-load_data}
+```{r regression-data_import}
 # clear the environment
 rm(list = ls())
 
@@ -245,7 +245,7 @@ are trivially negative, but take significantly longer for the optimizer to
 handle when attempting to fit a model. Thus, it saves on compute time to 
 automatically filter out such curves. 
 
-```{r method2-modify_data}
+```{r regression-fit_curve}
 # optimize model curves to each PCR reaction append model parameters and
 # features to the SummarizedExperiment
 se <- fit_models_to_se(
@@ -284,7 +284,7 @@ for each assay on the OpenArray plate is that fluorescence curve shape may vary
 by assay due to differences in primer efficiency. As a highly multiplex 
 platform, numerous assays are typically present on the same OpenArray plate. 
 
-```{r method2-interpret_data}
+```{r regression-derive_results}
 # save filepath to target-threshold-key
 key_path = system.file(
     "extdata", 
