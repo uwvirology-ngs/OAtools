@@ -206,15 +206,29 @@ path = system.file(
 se <- excel_to_summarized_experiment(path = path, num_results = 96)
 ```
 
-However, we must now optimize the 5-parameter logistic regression to each 
-fluorescence curve and add extracted features to the data. The 
-fit_models_to_se() function adds extracted features such as the overall 
-change-in-fluorescence and the slope at the midpoint of the reaction to the 
-input data. This function is powered by SciPy for model optimization and is 
-the most computationally expensive of the package, so it may take a moment to 
-run. To speed up processing and prevent overflow errors, reactions with 
-overall change-in-fluorescence below the linear_threshold parameter are 
-considered trivially negative and fit to linear models instead.
+The next step is to run the optimizer and fit a 5PL model curve to each PCR 
+reaction on the OpenArray plate. OAtools exports the `fit_models_to_se()`
+function, which iterates over experiment and optimizes such a model to each 
+fluorescence curve. The function then computes features of the model from the 
+parameters of best fit and appends them to the coldata of the 
+SummarizedExperiment. 
+
+Under the hood, `fit_models_to_se()` invokes the `run_fit_curve()` function, 
+which is an R wrapper around the internal `fit_curve()` function implemented in 
+python3. `fit_curve()` runs the optimizer and returns the model when provided 
+fluorescence vs. cycle data as a data frame for a single PCR reaction.
+
+Among the features appended by `fit_models_to_se()` are the slope at the 
+midpoint of the reaction and the overall change in fluorescence, both of which 
+are relevant indicators of the PCR result. Note that we include a
+linear_threshold parameter when calling the function. PCR curves with overall 
+change in fluorescence below the linear_threshold parameter are marked as 
+negative and fit to a linear_model instead. 
+
+The rationale is that PCR curves with very low overall change in fluorescence 
+are trivially negative, but take significantly longer for the optimizer to 
+handle when attempting to fit a model. Thus, it saves on compute time to 
+automatically filter out such curves. 
 
 ```{r method2-modify_data}
 # optimize 5PL/linear models to each curve and append to the dataset
