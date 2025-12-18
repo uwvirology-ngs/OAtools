@@ -22,11 +22,6 @@ knitr::opts_chunk$set(
 )
 ```
 
-```{r libraries, include=FALSE}
-library(OAtools)
-library(SummarizedExperiment)
-```
-
 ## Introduction
 
 Highly multiplex PCR platforms enable drastically greater throughput compared 
@@ -50,27 +45,56 @@ research environments.
 
 ## Installation
 
+### GitHub Install
+
 To install the development version of *OAtools* directly from the 
 uwvirology-ngs public GitHub, (<https://github.com/uwvirology-ngs/OAtools>) 
 run the commands below in your R console:
 
 ```{r installation-pak, eval=FALSE}
+# install pak from CRAN
+if (!require("pak", quietly = TRUE)) {
+    install.packages("pak")
+}
+
 # install OAtools from the uwvirology-ngs GitHub
 pak::pak("uwvirology-ngs/OAtools")
 ```
+
+### Bioconductor Install
 
 Our lab plans to share this project as a Bioconductor package. Once available, 
 this package may be installed from Bioconductor by running the following 
 commands in the R console:
 
 ```{r installation-bioconductor, eval=FALSE}
-# if needed, install Bioconductor
+# install Bioconductor from CRAN
 if (!require("BiocManager", quietly = TRUE)) {
     install.packages("BiocManager")
 }
 
 # install OAtools from Bioconductor
 BiocManager::install("OAtools")
+```
+
+### Environment Setup
+
+If following along with the vignette by running code blocks in the R console, 
+attach the `OAtools` and `SummarizedExperiment` libraries to the environment.
+The `SummarizedExperiment` package should already be installed as a dependency.
+
+```{r libraries, message=FALSE}
+# attach OAtools and SummarizedExperiment libraries
+library(OAtools)
+library(SummarizedExperiment)
+```
+
+If it is not installed, install dplyr with the following:
+```{r install-dplyr, eval=FALSE}
+# install dplyr from CRAN
+if (!require("dplyr", quietly = TRUE)) {
+    install.packages("dplyr")
+}
 ```
 
 ## Workflow Overview
