@@ -250,12 +250,23 @@ as.data.frame(SummarizedExperiment::colData(se)) |>
     knitr::kable(format = "markdown")
 ```
 
-The next step is to assign results based off of the extracted features. The 
-assign_calls_to_se() function accepts a .xlsx file that associates each 
-assay target with user-selected thresholds for cycle threshold, midpoint 
-slope, and overall change-in-fluorescence that determine whether amplification 
-in the well is interpreted as positive or negative. For more details, 
-run ?OAtools::target_threshold_key in the R console.
+The next step is to use the model parameters and features we've retrieved to 
+derive PCR results. We can invoke the `assign_calls_to_se()` function on our
+SummarizedExperiment to do this programmatically. `assign_calls_to_se()` 
+accepts as input the SummarizedExperiment and an excel key (.xlsx) associating
+each assay target with threshold values for certain model features. In 
+particular, the excel must specify values for cycle threshold, slope at the 
+midpoint, and overall change-in-fluorescence.
+
+For more details on the key, run `?OAtools::target_threshold_key` in the R 
+console. 
+
+The outcome of running the `assign_calls_to_se()` function is to add columns 
+indicating whether the PCR reaction clears each threshold, then a column 
+indicating the final PCR result. The rationale for allowing different thresholds
+for each assay on the OpenArray plate is that fluorescence curve shape may vary 
+by assay due to differences in primer efficiency. As a highly multiplex 
+platform, numerous assays are typically present on the same OpenArray plate. 
 
 ```{r method2-interpret_data}
 # save filepath to target-threshold-key
@@ -265,21 +276,20 @@ key_path = system.file(
     package = "OAtools"
 )
 
-# assign results based on the key and append to the data frame
+# assign a PCR result according to the key
 se <- assign_calls_to_se(
     se = se, 
     key_path = key_path
 )
 
-# print a snapshot including the logic for determining the result
-result_data <- as.data.frame(SummarizedExperiment::colData(se))
-result_data |> 
+# render a snapshot including the logic for determining the result
+as.data.frame(SummarizedExperiment::colData(se)) |> 
     dplyr::select(well, x_mid:delta, slope_threshold:crt_threshold, result) |> 
-    dplyr::distinct(well, .keep_all = TRUE) |> 
     dplyr::slice_head(n = 10) |> 
     knitr::kable(format = "markdown")
 ```
 
+Session Info:
 ```{r sessionInfo}
 sessionInfo()
 ```
