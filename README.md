@@ -49,31 +49,67 @@ browseVignettes(package = "OAtools")
 
 ## Example
 
-Here we run the core OAtools pipeline on the example package data. 
-OAtools first converts raw OpenArray qPCR data into a tidy tibble, 
-then optimizes a model curve to the fluorescence vs. cycle data for each 
-reaction. Reactions may be labeled as positive, inconclusive, or negative 
-depending on comparison of curve features to numeric thresholds, which are 
-described in the target_threshold_key for each assay. Finally, the user may 
-generate a dynamic .html document to serve as a run summary. This example, and
-further documentation of OAtools, may be found within the package vignette. 
+Here we demonstrate a minimal example of the OAtools workflow. Please refer to 
+the package vignette for more comprehensive documentation. 
+
+### Importing Run Data
+
+Once data has been exported in excel format from QuantStudio 12K Flex Software, 
+we can load the experiment into a SummarizedExperiment container. 
 
 ``` r
-library(OAtools)
+# save filepath to example OpenArray gene expression run data
+path = system.file(
+    "extdata", 
+    "oa_gene_expression_batch1.xlsx", 
+    package = "OAtools"
+)
 
-# locates example raw OpenArray qPCR run data
-path = system.file("extdata", "oa_gene_expression_batch1.xlsx", package = "OAtools")
+# transform the run data into a SummarizedExperiment
+se <- excel_to_summarized_experiment(
+    path = path, 
+    num_results = 96
+)
+```
 
-# locates example key pairing assay targets with numeric thresholds
-key_path = system.file("extdata", "target_threshold_key.xlsx", package = "OAtools")
+### Analyzing PCR with logistic regressions
 
-# runs the core OAtools pipeline on the example package data
-tidy_run_data <- tidy_gene_expression_data(path = path, num_results = 96) |> 
-  append_fit_results(linear_threshold = 400) |>     # fit a model curve to each qPCR reaction
-  assign_calls_with_key(key_path = key_path)        # interpret results based on model features
+Next, we run an optimizer to fit logistic regressions to each amplification 
+curve and use the resulting model equation to derive PCR results. A pre-made 
+key defines thresholds that separate curves into positive and negative results.
 
-# dynamically generates experiment run report (.html)
-generate_report(data = tidy_run_data, path = ".", analysis = "curve-fitting")
+```r
+# optimize model curves to each PCR reaction
+se <- fit_models_to_se(
+    se = se,
+    linear_threshold = 500
+)
+
+# save filepath to assay target key
+key_path = system.file(
+    "extdata", 
+    "target_threshold_key.xlsx", 
+    package = "OAtools"
+)
+
+# assign a PCR result according to the key
+se <- assign_calls_to_se(
+    se = se, 
+    key_path = key_path
+)
+```
+
+### Communicating the Results
+
+Finally, we dynamically generate an HTML run report to summarize the outcome 
+of the experiment. 
+
+```r
+# generate a .html report from the run data
+generate_report(
+    se = se,    
+    path = "."
+)
 ```
 
 ## Getting Help
