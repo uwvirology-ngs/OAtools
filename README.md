@@ -10,23 +10,53 @@
 
 <!-- badges: end -->
 
-An R package for wrangling gene expression data generated on Thermo Fisher's OpenArray platform. OAtools streamlines every step of the data analysis pipeline, from initial loading and cleaning to reporting and communication. The motivation behind OAtools is to support the open-source and shareable analaysis of such data in research environments. 
+## Overview
+
+OAtools is an R package for analyzing OpenArray gene expression experiments 
+motivated by a desire to support open-source and shareable data analyses in 
+public health and research environments. 
+
+OAtools offers a public API for the following: 
+
+- converting run data into ergonomic Bioconductor class objects
+- analyzing OpenArray experiments by fitting logistic models to PCR curves
+- rendering pre-packaged plots to visualize experiment outcomes
+- generating an HTML document summarizing run results for reporting
 
 ## Installation
 
-You can install the development version of OAtools from [GitHub](https://github.com/):
+You can install the development version of OAtools from the [UW Virology NGS GitHub](https://github.com/uwvirology-ngs):
 
 ``` r
-# first install pak, which facilitates downloads from GitHub
-install.packages("pak")
+# Install the devtools package
+install.packages("devtools")
 
-# then install the development version of OAtools
-pak::pak("uwvirology-ngs/OAtools")
+# Install the development version of OAtools from the UW Virology NGS GitHub
+devtools::install_github(
+    repo = "uwvirology-ngs/OAtools", 
+    dependencies = TRUE, 
+    build_vignettes = TRUE
+)
+```
+
+## Documentation
+
+The full documentation for OAtools may be found in the package vignette. Once OAtools is installed, the vignette is accessible by running the following command in the R console: 
+
+``` r
+browseVignettes(package = "OAtools")
 ```
 
 ## Example
 
-Here we run the core OAtools pipeline on the example package data. OAtools first converts raw OpenArray qPCR data into a tidy tibble, then optimizes a model curve to the fluorescence vs. cycle data for each reaction. Reactions may be labeled as positive, inconclusive, or negative depending on comparison of curve features to numeric thresholds, which are described in the target_threshold_key for each assay. Finally, the user may generate a dynamic .html document to serve as a run summary. This example, and further documentation of OAtools, may be found within the package vignette. 
+Here we run the core OAtools pipeline on the example package data. 
+OAtools first converts raw OpenArray qPCR data into a tidy tibble, 
+then optimizes a model curve to the fluorescence vs. cycle data for each 
+reaction. Reactions may be labeled as positive, inconclusive, or negative 
+depending on comparison of curve features to numeric thresholds, which are 
+described in the target_threshold_key for each assay. Finally, the user may 
+generate a dynamic .html document to serve as a run summary. This example, and
+further documentation of OAtools, may be found within the package vignette. 
 
 ``` r
 library(OAtools)
@@ -45,3 +75,7 @@ tidy_run_data <- tidy_gene_expression_data(path = path, num_results = 96) |>
 # dynamically generates experiment run report (.html)
 generate_report(data = tidy_run_data, path = ".", analysis = "curve-fitting")
 ```
+
+## Getting Help
+
+For feature suggestions or bug reports, please file an issue on the project [GitHub](https://github.com/uwvirology-ngs/OAtools/issues)
