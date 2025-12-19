@@ -51,14 +51,18 @@ To install the development version of *OAtools* directly from the
 uwvirology-ngs public GitHub, (<https://github.com/uwvirology-ngs/OAtools>) 
 run the commands below in your R console:
 
-```{r installation-pak, eval=FALSE}
-# install pak from CRAN
-if (!require("pak", quietly = TRUE)) {
-    install.packages("pak")
+```{r installation-dev, eval=FALSE}
+# Install devtools from CRAN
+if (!require("devtools", quietly = TRUE)) {
+    install.packages("devtools")
 }
 
-# install OAtools from the uwvirology-ngs GitHub
-pak::pak("uwvirology-ngs/OAtools")
+# Install the development version of OAtools from the UW Virology NGS GitHub
+devtools::install_github(
+    repo = "uwvirology-ngs/OAtools", 
+    dependencies = TRUE, 
+    build_vignettes = TRUE
+)
 ```
 
 ### Bioconductor Install
