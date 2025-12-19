@@ -202,7 +202,17 @@ software, we can create a run result report straight away. We can call the
 `generate_report()` function directly on the Summarized Experiment, which then 
 dynamically generates a .html document summarizing the results. 
 
-The following code block would generate a run report assuming the data has been
+Note that the package kableExtra is required to generate the PCR report. 
+If it is not installed, install with:
+
+```{r install-kableExtra, eval=FALSE}
+# install kableExtra from CRAN
+if (!require("kableExtra", quietly = TRUE)) {
+    install.packages("kableExtra")
+}
+```
+
+The following code block generates the PCR report assuming that data has been
 loaded in using `excel_to_summarized_experiment()`. Note that it does not 
 automatically execute when constructing this vignette as the function calls 
 code to save the report directly to the user's machine. 

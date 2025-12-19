@@ -14,6 +14,13 @@
 #' generate_report(se = example_se, path = file.path("..", "report"))
 generate_report <- function(se, path) {
     
+    if (!requireNamespace("kableExtra", quietly = TRUE)) {
+        stop(
+            "Package 'kableExtra' is required to generate the PCR report.\n",
+            "Please install it with install.packages('kableExtra')."
+        )
+    }
+    
     data_file <- tempfile(fileext = ".rds")
     saveRDS(se, data_file)
     
