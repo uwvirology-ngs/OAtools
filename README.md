@@ -112,6 +112,14 @@ generate_report(
 )
 ```
 
+## Interoperability
+
+*OAtools* supports interoperability with the twin packages *ReadqPCR* and 
+*NormqPCR*, which normalize RT-qPCR gene expression data from platforms
+like OpenArray. Refer to the package vignette for example code or the official
+[NormqPCR Documentation](https://www.bioconductor.org/packages/release/bioc/html/NormqPCR.html)
+for normalization workflows. 
+
 ## Getting Help
 
 For feature suggestions or bug reports, please file an issue on the project [GitHub](https://github.com/uwvirology-ngs/OAtools/issues)

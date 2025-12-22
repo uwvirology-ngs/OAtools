@@ -342,7 +342,57 @@ as.data.frame(SummarizedExperiment::colData(se)) |>
     dplyr::slice_head(n = 10)
 ```
 
+## Interoperability
+
+### NormqPCR
+
+*OAtools* supports interoperability with the NormqPCR package from Bioconductor,
+which provides functions to normalize RT-qPCR data from gene expression 
+platforms like OpenArray. *NormqPCR* reads from the qPCRBatch class object, 
+which requires the *ReadqPCR* package. We can set up our environment as below:
+
+```{r interop-NormqPCR_setup, message=FALSE}
+# Install ReadqPCR from Bioconductor
+if (!require("ReadqPCR", quietly = TRUE)) {
+    BiocManager::install("ReadqPCR")
+}
+
+# Install NormqPCR from Bioconductor
+if (!require("NormqPCR", quietly = TRUE)) {
+    BiocManager::install("ReadqPCR")
+}
+```
+
+Then, to convert the SummarizedExperiment container into a *NormqPCR*-friendly instance of the qPCRBatch class, simply invoke the `se_to_qPCRBatch()` function
+on the SummarizedExperiment container. With our qPCRBatch object, we can, for
+example, normalize the cycle thresholds against a housekeeping gene.
+
+```{r interop-NormqPCR}
+# convert SummarizedExperiment container to qPCRBatch
+qpcr <- se_to_qPCRBatch(se)
+
+# choose housekeeping gene (in this case, the RNAse P control)
+housekeeping_gene = "RNAse_P_Pa04930436_g1"
+
+# run delta-Cq calculation
+norm <- NormqPCR::deltaCq(
+    qPCRBatch = qpcr,
+    hkgs = housekeeping_gene
+)
+
+# display expression matrix
+as.data.frame(Biobase::exprs(norm)) |> 
+    dplyr::select(`Positive Control`:`Sample-106`) |> 
+    knitr::kable(digits = 2)
+    
+```
+
+Please refer to the official documentation for *NormqPCR* for more information.
+(<https://bioconductor.org/packages/release/bioc/html/NormqPCR.html>) 
+
+
 ## Session Info
+
 ```{r sessionInfo}
 sessionInfo()
 ```
