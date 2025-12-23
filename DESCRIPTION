@@ -35,7 +35,9 @@ Imports:
 Suggests: 
     testthat (>= 3.0.0),
     knitr,
-    kableExtra (>= 1.4.0)
+    kableExtra (>= 1.4.0),
+    NormqPCR (>= 1.56.0),
+    BiocManager (>= 1.30.27)
 biocViews: qPCR, GeneExpression, Regression
 BugReports: https://github.com/uwvirology-ngs/OAtools/issues
 URL: https://github.com/uwvirology-ngs/OAtools
