@@ -78,9 +78,9 @@ fitModelsToSE <- function(se, linear_threshold) {
         
         # fill in new coldata
         col_results$regression_type[i] <- result$regression
-        col_results$x_mid[i] <- base::round(result$x_mid, 3)
-        col_results$slope[i] <- base::round(result$slope, 3)
-        col_results$delta[i] <- base::round(result$delta, 3)
+        col_results$midpoint_cycle[i] <- base::round(result$x_mid, 3)
+        col_results$midpoint_slope[i] <- base::round(result$slope, 3)
+        col_results$delta_fluo[i] <- base::round(result$delta, 3)
     }
     
     # attach results to SummarizedExperiment

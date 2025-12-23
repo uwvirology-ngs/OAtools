@@ -297,7 +297,7 @@ as.data.frame(SummarizedExperiment::colData(se)) |>
         well, 
         sample_name:target_name, 
         regression_type, 
-        x_mid:delta
+        midpoint_cycle:delta_fluo
     ) |> 
     dplyr::slice_head(n = 10)
 ```
@@ -338,7 +338,10 @@ se <- assignCallsToSE(
 
 # render a snapshot including the logic for determining the result
 as.data.frame(SummarizedExperiment::colData(se)) |> 
-    dplyr::select(well, x_mid:delta, slope_threshold:crt_threshold, result) |> 
+    dplyr::select(
+        well, crt, midpoint_slope, delta_fluo, 
+        crt_threshold, slope_threshold, delta_threshold, result
+    ) |> 
     dplyr::slice_head(n = 10)
 ```
 

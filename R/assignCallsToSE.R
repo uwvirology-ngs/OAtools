@@ -45,10 +45,10 @@ assignCallsToSE <- function(se, key_path) {
                 (!is.na(.data$crt) & .data$crt < .data$crt_threshold),
             
             slope_pass = is.na(.data$slope_threshold) | 
-                .data$slope > .data$slope_threshold,
+                .data$midpoint_slope > .data$slope_threshold,
             
             delta_pass = is.na(.data$delta_threshold) | 
-                .data$delta > .data$delta_threshold,
+                .data$delta_fluo > .data$delta_threshold,
             
             result = dplyr::case_when(
                 is.na(.data$crt_threshold) & 
