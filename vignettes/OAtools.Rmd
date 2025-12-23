@@ -119,7 +119,7 @@ which is included with the package. This data is a sample from a gene expression
 experiment our lab, the University of Washington Virology Lab, ran on human 
 nasal swabs to screen for respiratory pathogens. 
 
-With the filepath specified, we use the excel_to_summarized_experiment() 
+With the filepath specified, we use the `excelToSummarizedExperiment()` 
 function to read the .xlsx file containing the run data and load it into a 
 SummarizedExperiment object. SummarizedExperiment is an S4 Class from 
 Bioconductor used to stored matrix-like assay data and associated metadata. Note
@@ -135,7 +135,7 @@ path = system.file(
 )
 
 # transform the run data into a SummarizedExperiment
-se <- excel_to_summarized_experiment(
+se <- excelToSummarizedExperiment(
     path = path, 
     num_results = 96
 )
@@ -203,10 +203,10 @@ as.data.frame(rowData(se)) |>
 
 If we intend to use the relative threshold analysis native to the instrument 
 software, we can create a run result report straight away. We can call the 
-`generate_report()` function directly on the Summarized Experiment, which then 
+`generateReport()` function directly on the Summarized Experiment, which then 
 dynamically generates a .html document summarizing the results. 
 
-Note that the package kableExtra is required to generate the PCR report. 
+Note that the package *kableExtra* is required to generate the PCR report. 
 If it is not installed, install with:
 
 ```{r install-kableExtra, eval=FALSE}
@@ -217,13 +217,13 @@ if (!require("kableExtra", quietly = TRUE)) {
 ```
 
 The following code block generates the PCR report assuming that data has been
-loaded in using `excel_to_summarized_experiment()`. Note that it does not 
+loaded in using `excelToSummarizedExperiment()`. Note that it does not 
 automatically execute when constructing this vignette as the function calls 
 code to save the report directly to the user's machine. 
 
 ```{r reporting-results, eval=FALSE}
 # generate a .html report from the run data
-generate_report(se = se, path = ".")
+generateReport(se = se, path = ".")
 ```
 
 ## Analysis by Logistic Regression
@@ -232,7 +232,7 @@ In alignment with open science and reproducible data analyses, OAtools supports
 an alternative method to derive sample results by fitting logistic models to 
 the fluorescence curves of each PCR reaction on the OpenArray plate. The 
 parameters of the model curve can be used to determine the result of each PCR 
-reaction. In particular, OAtools implements an algorithm from SciPy to fit a 
+reaction. In particular, OAtools calls an algorithm from SciPy to fit a 
 5-parameter logistic regression to each fluorescence curve; we chose the 5PL 
 model for its ability to handle asymmetries common to PCR curves. 
 
@@ -254,29 +254,29 @@ path = system.file(
 )
 
 # transform the run data into a SummarizedExperiment
-se <- excel_to_summarized_experiment(path = path, num_results = 96)
+se <- excelToSummarizedExperiment(path = path, num_results = 96)
 ```
 
 ### Optimizing Models to PCR Curves
 
 The next step is to run the optimizer and fit a 5PL model curve to each PCR 
-reaction on the OpenArray plate. OAtools exports the `fit_models_to_se()`
+reaction on the OpenArray plate. OAtools exports the `fitModelsToSE()`
 function, which iterates over experiment and optimizes such a model to each 
 fluorescence curve. The function then computes features of the model from the 
 parameters of best fit and appends them to the coldata of the 
 SummarizedExperiment. 
 
-Under the hood, `fit_models_to_se()` invokes the `run_fit_curve()` function, 
+Under the hood, `fitModelsToSE()` invokes the `runFitCurve`()` function, 
 which is an R wrapper around the internal `fit_curve()` function implemented in 
 python3. `fit_curve()` runs the optimizer and returns the model when provided 
 fluorescence vs. cycle data as a data frame for a single PCR reaction.
 
-Among the features appended by `fit_models_to_se()` are the slope at the 
+Among the features appended by `fitModelsToSe()` are the slope at the 
 midpoint of the reaction and the overall change in fluorescence, both of which 
 are relevant indicators of the PCR result. Note that we include a
 linear_threshold parameter when calling the function. PCR curves with overall 
 change in fluorescence below the linear_threshold parameter are marked as 
-negative and fit to a linear_model instead. 
+negative and fit to a linear model instead. 
 
 The rationale is that PCR curves with very low overall change in fluorescence 
 are trivially negative, but take significantly longer for the optimizer to 
@@ -286,7 +286,7 @@ automatically filter out such curves.
 ```{r regression-fit_curve}
 # optimize model curves to each PCR reaction append model parameters and
 # features to the SummarizedExperiment
-se <- fit_models_to_se(
+se <- fitModelsToSE(
     se = se,
     linear_threshold = 500
 )
@@ -305,17 +305,17 @@ as.data.frame(SummarizedExperiment::colData(se)) |>
 ### Deriving PCR Results from the Model
 
 The next step is to use the model parameters and features we've retrieved to 
-derive PCR results. We can invoke the `assign_calls_to_se()` function on our
-SummarizedExperiment to do this programmatically. `assign_calls_to_se()` 
+derive PCR results. We can invoke the `assignCallsToSE()` function on our
+SummarizedExperiment to do this programmatically. `assignCallsToSE()` 
 accepts as input the SummarizedExperiment and an excel key (.xlsx) associating
-each assay target with threshold values for certain model features. In 
+each assay target with threshold values for relevant model features. In 
 particular, the excel must specify values for cycle threshold, slope at the 
-midpoint, and overall change-in-fluorescence.
+reaction midpoint, and overall change-in-fluorescence.
 
 For more details on the key, run `?OAtools::target_threshold_key` in the R 
 console. 
 
-The outcome of running the `assign_calls_to_se()` function is to add columns 
+The outcome of running the `assignCallsToSe()` function is to add columns 
 indicating whether the PCR reaction clears each threshold, then a column 
 indicating the final PCR result. The rationale for allowing different thresholds
 for each assay on the OpenArray plate is that fluorescence curve shape may vary 
@@ -331,7 +331,7 @@ key_path = system.file(
 )
 
 # assign a PCR result according to the key
-se <- assign_calls_to_se(
+se <- assignCallsToSE(
     se = se, 
     key_path = key_path
 )
@@ -363,13 +363,13 @@ if (!require("NormqPCR", quietly = TRUE)) {
 }
 ```
 
-Then, to convert the SummarizedExperiment container into a *NormqPCR*-friendly instance of the qPCRBatch class, simply invoke the `se_to_qPCRBatch()` function
+Then, to convert the SummarizedExperiment container into a *NormqPCR*-friendly instance of the qPCRBatch class, simply invoke the `seToQPCRBatch()` function
 on the SummarizedExperiment container. With our qPCRBatch object, we can, for
 example, normalize the cycle thresholds against a housekeeping gene.
 
 ```{r interop-NormqPCR}
 # convert SummarizedExperiment container to qPCRBatch
-qpcr <- se_to_qPCRBatch(se)
+qpcr <- seToQPCRBatch(se)
 
 # choose housekeeping gene (in this case, the RNAse P control)
 housekeeping_gene = "RNAse_P_Pa04930436_g1"

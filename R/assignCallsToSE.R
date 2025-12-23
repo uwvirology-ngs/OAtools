@@ -20,9 +20,9 @@
 #' )
 #' 
 #' se <- example_se |> 
-#'     fit_models_to_se(linear_threshold = 500) |> 
-#'     assign_calls_to_se(key_path = key_path)
-assign_calls_to_se <- function(se, key_path) {
+#'     fitModelsToSE(linear_threshold = 500) |> 
+#'     assignCallsToSE(key_path = key_path)
+assignCallsToSE <- function(se, key_path) {
     
     # load in coldata
     data <- as.data.frame(SummarizedExperiment::colData(se))

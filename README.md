@@ -66,7 +66,7 @@ path = system.file(
 )
 
 # transform the run data into a SummarizedExperiment
-se <- excel_to_summarized_experiment(
+se <- excelToSummarizedExperiment(
     path = path, 
     num_results = 96
 )
@@ -80,7 +80,7 @@ key defines thresholds that separate curves into positive and negative results.
 
 ```r
 # optimize model curves to each PCR reaction
-se <- fit_models_to_se(
+se <- fitModelsToSE(
     se = se,
     linear_threshold = 500
 )
@@ -93,7 +93,7 @@ key_path = system.file(
 )
 
 # assign a PCR result according to the key
-se <- assign_calls_to_se(
+se <- assignCallsToSE(
     se = se, 
     key_path = key_path
 )
@@ -106,7 +106,7 @@ of the experiment.
 
 ```r
 # generate a .html report from the run data
-generate_report(
+generateReport(
     se = se,    
     path = "."
 )

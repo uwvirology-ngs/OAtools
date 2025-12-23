@@ -27,9 +27,9 @@
 #'     package = "OAtools"
 #' )
 #' 
-#' se <- excel_to_summarized_experiment(path = path, num_results = 96)
-#' se2 <- fit_models_to_se(se = se, linear_threshold = 500)
-fit_models_to_se <- function(se, linear_threshold) {
+#' se <- excelToSummarizedExperiment(path = path, num_results = 96)
+#' se <- fitModelsToSE(se = se, linear_threshold = 500)
+fitModelsToSE <- function(se, linear_threshold) {
     
     # input validation
     base::stopifnot(
@@ -63,7 +63,7 @@ fit_models_to_se <- function(se, linear_threshold) {
     for (i in base::seq_along(wells)) {
         
         # save output for run_fit_curve() function
-        result <- run_fit_curve(
+        result <- runFitCurve(
             data.frame(
                 cycle = cycles, 
                 fam = base::as.numeric(

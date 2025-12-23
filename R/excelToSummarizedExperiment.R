@@ -18,8 +18,8 @@
 #'     "oa_gene_expression_batch1.xlsx", 
 #'     package = "OAtools"
 #' )
-#' se <- excel_to_summarized_experiment(path = path, num_results = 96)
-excel_to_summarized_experiment <- function(path = path, num_results = 96) {
+#' se <- excelToSummarizedExperiment(path = path, num_results = 96)
+excelToSummarizedExperiment <- function(path = path, num_results = 96) {
     
     # import results sheet
     results_data <- readxl::read_excel(

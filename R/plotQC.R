@@ -12,8 +12,8 @@
 #'
 #' @examples
 #' data(example_se)
-#' plot_qc(example_se)
-plot_qc <- function(se) {
+#' plotQC(example_se)
+plotQC <- function(se) {
     data <- as.data.frame(SummarizedExperiment::colData(se))
     
     data <- data |> dplyr::distinct(.data$well_position, .keep_all = TRUE)

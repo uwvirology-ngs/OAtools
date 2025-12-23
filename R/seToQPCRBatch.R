@@ -21,10 +21,10 @@
 #'     package = "OAtools"
 #' )
 #' 
-#' se <- excel_to_summarized_experiment(path = path, num_results = 96)
+#' se <- excelToSummarizedExperiment(path = path, num_results = 96)
 #' 
-#' qpcr <- se_to_qPCRBatch(se)
-se_to_qPCRBatch <- function(se) {
+#' qpcr <- seToQPCRBatch(se)
+seToQPCRBatch <- function(se) {
     coldata <- as.data.frame(SummarizedExperiment::colData(se))
     
     # create Cq matrix, averaging over technical replicates

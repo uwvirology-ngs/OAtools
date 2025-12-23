@@ -11,8 +11,8 @@
 #'
 #' @examples
 #' data(example_se)
-#' plot_overview(example_se)
-plot_overview <- function(se) {
+#' plotOverview(example_se)
+plotOverview <- function(se) {
     
     # load in and format se to Data Frame
     data <- as.data.frame(SummarizedExperiment::colData(se))

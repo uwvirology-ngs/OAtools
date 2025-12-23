@@ -11,8 +11,8 @@
 #'
 #' @examples
 #' data(example_se)
-#' generate_report(se = example_se, path = file.path("..", "report"))
-generate_report <- function(se, path) {
+#' generateReport(se = example_se, path = file.path("..", "report"))
+generateReport <- function(se, path) {
     
     if (!requireNamespace("kableExtra", quietly = TRUE)) {
         stop(

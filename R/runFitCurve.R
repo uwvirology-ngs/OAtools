@@ -26,7 +26,7 @@ utils::globalVariables("fit_curve")
 #'     cycle = as.integer(sub("cycle_", "", rownames(df))),
 #'     fam = as.numeric(df$well_2385)
 #' )
-run_fit_curve <- function(data, linear_threshold) {
+runFitCurve <- function(data, linear_threshold) {
     basilisk::basiliskRun(
         env = OAtools_env,
         fun = function() {

@@ -11,8 +11,8 @@
 #'
 #' @examples
 #' data(example_se)
-#' plot_crt(example_se)
-plot_crt <- function(se) {
+#' plotCrt(example_se)
+plotCrt <- function(se) {
     data <- as.data.frame(SummarizedExperiment::colData(se))
     
     # collapse data frame for unique reactions
