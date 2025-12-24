@@ -10,6 +10,10 @@
 #'
 #' @returns A SummarizedExperiment object
 #' 
+#' @importFrom S4Vectors DataFrame SimpleList
+#' @importFrom SummarizedExperiment SummarizedExperiment
+#' @importFrom rlang .data
+#' 
 #' @export
 #'
 #' @examples
@@ -19,9 +23,51 @@
 #'     package = "OAtools"
 #' )
 #' se <- excelToSummarizedExperiment(path = path, num_results = 96)
-excelToSummarizedExperiment <- function(path = path, num_results = 96) {
+excelToSummarizedExperiment <- function(path, num_results = 96) {
     
-    # import results sheet
+    # scrape data from results tab
+    results_data <- .importResultsTab(path = path, num_results = num_results)
+    
+    # scrape data from multicomponent tab
+    multicomponent_data <- .importMulticomponentTab(path = path)
+    
+    # 1. create assay matrix (cell values represent fluorescence measurements)
+    assay_matrix <- multicomponent_data |> 
+        dplyr::select(-.data$cycle) |> 
+        as.matrix()
+    
+    rownames(assay_matrix) <- paste0("cycle_", multicomponent_data$cycle)
+    colnames(assay_matrix) <- paste0("well_", colnames(assay_matrix))
+    
+    # 2. create colData (columns represent wells)
+    col_data <- results_data |> 
+        dplyr::arrange(.data$well) |> 
+        DataFrame(row.names = paste0("well_", results_data$well))
+    
+    # 3. create rowData (rows represent PCR cycles)
+    row_data <- DataFrame(
+        cycle = multicomponent_data$cycle,
+        row.names = paste0("cycle_", multicomponent_data$cycle)
+    )
+    
+    # construct SummarizedExperiment
+    se <- SummarizedExperiment(
+        assays = SimpleList(fluo = assay_matrix),
+        rowData = row_data,
+        colData = col_data,
+        metadata = list(
+            source_file = path,
+            num_wells = num_results
+        )
+    )
+    
+    return(se)
+}
+
+# import results sheet from excel and return data as a tibble
+.importResultsTab <- function(path, num_results = 96) {
+    
+    # read in results tab
     results_data <- readxl::read_excel(
         path = path, skip = 19, sheet = "Results",
         na = "Undetermined", n_max = num_results
@@ -42,7 +88,13 @@ excelToSummarizedExperiment <- function(path = path, num_results = 96) {
         )
     }
     
-    # import multicomponent data sheet
+    return(results_data)
+}
+
+# import multicomponent sheet from excel and return data as a tibble
+.importMulticomponentTab <- function(path) {
+    
+    # read in multicomponent tab
     multicomponent_data <- readxl::read_excel(
         path, skip = 19, sheet = "Multicomponent Data"
     ) |>
@@ -50,46 +102,13 @@ excelToSummarizedExperiment <- function(path = path, num_results = 96) {
         tidyr::drop_na() |>
         janitor::clean_names()
     
-    # prepare fluorescence data
+    # transform multicomponent data into tidy format
     fluo_data <- multicomponent_data |> 
-        dplyr::mutate(
-            well = factor(.data$well, levels = sort(unique(.data$well)))
-        ) |> 
         tidyr::pivot_wider(
             names_from = .data$well,
             values_from = .data$fam
         ) |> 
         dplyr::arrange(.data$cycle)
     
-    # create assay matrix
-    assay <- fluo_data |> 
-        dplyr::select(-.data$cycle) |> 
-        base::as.matrix()
-    
-    rownames(assay) <- base::paste0("cycle_", fluo_data$cycle)
-    colnames(assay) <- base::paste0("well_", colnames(assay))
-    
-    # prepare coldata
-    col_data <- results_data |> 
-        dplyr::arrange(.data$well) |> 
-        S4Vectors::DataFrame(row.names = paste0("well_", results_data$well))
-    
-    # prepare rowdata
-    row_data <- S4Vectors::DataFrame(
-        cycle = fluo_data$cycle,
-        row.names = paste0("cycle_", fluo_data$cycle)
-    )
-        
-    # construct SummarizedExperiment
-    se <- SummarizedExperiment::SummarizedExperiment(
-        assays   = S4Vectors::SimpleList(fluo = assay),
-        rowData = row_data,
-        colData = col_data,
-        metadata = list(
-            source_file = path,
-            num_wells = num_results
-        )
-    )
-    
-    return(se)
+    return(fluo_data)
 }

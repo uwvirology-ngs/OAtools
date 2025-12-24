@@ -4,7 +4,7 @@
 \alias{excelToSummarizedExperiment}
 \title{Convert OpenArray data from Excel to a Summarized Experiment}
 \usage{
-excelToSummarizedExperiment(path = path, num_results = 96)
+excelToSummarizedExperiment(path, num_results = 96)
 }
 \arguments{
 \item{path}{file path to the run data}
