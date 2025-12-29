@@ -3,7 +3,7 @@
 #' Generates a .html report summarizing the OpenArray experiment.
 #'
 #' @param se a SummarizedExperiment containing OpenArray qPCR data
-#' @param path intended outfile path
+#' @param path intended outfile path, defaults to a temporary directory
 #'
 #' @returns an .html report summarizing the OpenArray run results
 #'
@@ -11,8 +11,8 @@
 #'
 #' @examples
 #' data(example_se)
-#' generateReport(se = example_se, path = file.path("..", "report"))
-generateReport <- function(se, path) {
+#' generateReport(se = example_se)
+generateReport <- function(se, path = tempdir()) {
     
     if (!requireNamespace("kableExtra", quietly = TRUE)) {
         stop(

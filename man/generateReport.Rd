@@ -4,12 +4,12 @@
 \alias{generateReport}
 \title{Generate a report}
 \usage{
-generateReport(se, path)
+generateReport(se, path = tempdir())
 }
 \arguments{
 \item{se}{a SummarizedExperiment containing OpenArray qPCR data}
 
-\item{path}{intended outfile path}
+\item{path}{intended outfile path, defaults to a temporary directory}
 }
 \value{
 an .html report summarizing the OpenArray run results
@@ -19,5 +19,5 @@ Generates a .html report summarizing the OpenArray experiment.
 }
 \examples{
 data(example_se)
-generateReport(se = example_se, path = file.path("..", "report"))
+generateReport(se = example_se)
 }
