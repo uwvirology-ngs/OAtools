@@ -23,6 +23,7 @@ Imports:
     janitor (>= 2.2.1),
     methods (>= 4.5.2),
     plotly (>= 4.11.0),
+    purrr (>= 1.2.0),
     ReadqPCR (>= 1.56.0),
     readxl (>= 1.4.5),
     reticulate (>= 1.43.0),

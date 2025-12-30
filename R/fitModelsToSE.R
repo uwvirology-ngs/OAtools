@@ -16,7 +16,10 @@
 #'
 #' @returns a SummarizedExperiment
 #' 
+#' @import SummarizedExperiment
+#' 
 #' @importFrom rlang .data
+#' @importFrom S4Vectors DataFrame
 #' 
 #' @export
 #'
@@ -32,63 +35,50 @@
 fitModelsToSE <- function(se, linear_threshold) {
     
     # input validation
-    base::stopifnot(
-        base::inherits(se, "SummarizedExperiment"),
-        "fluo" %in% SummarizedExperiment::assayNames(se)
+    stopifnot(
+        inherits(se, "SummarizedExperiment"),
+        "fluo" %in% assayNames(se)
     )
     
-    # extract well and cycle names
-    wells <- base::colnames(se)
-    cycles <- SummarizedExperiment::rowData(se)$cycle
-    n_cycles <- base::length(cycles)
+    # pull observed fluorescence data for the experiment
+    wells <- colnames(se)
+    cycles <- rowData(se)$cycle
+    fluo <- assay(se, "fluo")
     
-    # setup empty matrix for fluo_pred assay
-    fluo_pred <- base::matrix(
-        data = NA_real_,
-        nrow = n_cycles,
-        ncol = base::length(wells),
-        dimnames = base::list(base::rownames(se), wells)
-    )
-    
-    # setup empty data frame for new coldata
-    col_results <- S4Vectors::DataFrame(
-        regression_type = rep(NA_character_, base::length(wells)),
-        x_mid = base::rep(NA_real_, base::length(wells)),
-        slope = base::rep(NA_real_, base::length(wells)),
-        delta = base::rep(NA_real_, base::length(wells)),
-        row.names = wells
-    )
-    
-    # for each well
-    for (i in base::seq_along(wells)) {
-        
-        # save output for run_fit_curve() function
-        result <- runFitCurve(
+    # optimize a model to each well, save as a nested list
+    fits <- purrr::map(
+        seq_along(wells),
+        ~ runFitCurve(
             data.frame(
                 cycle = cycles, 
-                fam = base::as.numeric(
-                    SummarizedExperiment::assay(se, "fluo")[, i]
-                )
+                fam = as.numeric(fluo[, .x])
             ),
             linear_threshold
         )
-        
-        # fill in assay matrix
-        fluo_pred[, i] <- base::as.numeric(result$y_pred)
-        
-        # fill in new coldata
-        col_results$regression_type[i] <- result$regression
-        col_results$midpoint_cycle[i] <- base::round(result$x_mid, 3)
-        col_results$midpoint_slope[i] <- base::round(result$slope, 3)
-        col_results$delta_fluo[i] <- base::round(result$delta, 3)
-    }
-    
-    # attach results to SummarizedExperiment
-    SummarizedExperiment::assays(se)$fluo_pred <- fluo_pred
-    SummarizedExperiment::colData(se) <- base::cbind(
-        SummarizedExperiment::colData(se),
-        col_results
     )
+    
+    # build matrix of predicted fluorescence values 
+    fluo_pred <- vapply(
+        fits,
+        function(res) as.numeric(res$y_pred),
+        numeric(length(cycles))
+    )
+    
+    # add predicted fluorescence values as an assay to the SummarizedExperiment
+    dimnames(fluo_pred) <- list(rownames(se), wells)
+    assays(se)$fluo_pred <- fluo_pred
+    
+    # construct new coldata from model list
+    col_results <- S4Vectors::DataFrame(
+        regression_type =       vapply(fits, `[[`, character(1), "regression"),
+        midpoint_cycle  = round(vapply(fits, `[[`, numeric(1), "x_mid"), 3),
+        midpoint_slope  = round(vapply(fits, `[[`, numeric(1), "slope"), 3),
+        delta_fluo      = round(vapply(fits, `[[`, numeric(1), "delta"), 3),
+        row.names = wells
+    )
+    
+    # append new colData to the SummarizedExperiment
+    colData(se) <- cbind(colData(se), col_results)
     
     return(se)
 }
