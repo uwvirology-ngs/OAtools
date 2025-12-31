@@ -28,6 +28,5 @@ key_path = system.file(
 )
 
 se <- example_se |> 
-    fitModelsToSE(linear_threshold = 500) |> 
     assignCallsToSE(key_path = key_path)
 }

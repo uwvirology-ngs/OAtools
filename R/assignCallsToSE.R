@@ -20,7 +20,6 @@
 #' )
 #' 
 #' se <- example_se |> 
-#'     fitModelsToSE(linear_threshold = 500) |> 
 #'     assignCallsToSE(key_path = key_path)
 assignCallsToSE <- function(se, key_path) {
     
