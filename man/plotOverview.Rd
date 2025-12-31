@@ -2,7 +2,7 @@
 % Please edit documentation in R/plotOverview.R
 \name{plotOverview}
 \alias{plotOverview}
-\title{Plot Overview of Amplifications as a Heat Map}
+\title{Plot Amplification Status by Sample and Gene}
 \usage{
 plotOverview(se)
 }
@@ -13,10 +13,11 @@ plotOverview(se)
 a ggplot2 figure
 }
 \description{
-This function generates a heat map summarizing the amplification status
-results for each sample on the OpenArray plate by target gene.
+Generates an overview graphic summarizing qPCR results for each combination
+of sample and gene on an OpenArray experiment.
 }
 \examples{
 data(example_se)
+
 plotOverview(example_se)
 }

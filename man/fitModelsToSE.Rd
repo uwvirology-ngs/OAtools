@@ -9,8 +9,8 @@ fitModelsToSE(se, linear_threshold)
 \arguments{
 \item{se}{A SummarizedExperiment object with OpenArray fluorescence data}
 
-\item{linear_threshold}{a numeric defining the minimal change-in-fluorescence
-to fit a logistic model.}
+\item{linear_threshold}{a numeric defining the minimal
+change-in-fluorescence to fit a logistic model.}
 }
 \value{
 a SummarizedExperiment
@@ -24,8 +24,8 @@ result of the excel_to_summarized_experiment() function of the package.
 \details{
 PCR reactions with a change-in-fluorescence exceeding the linear_threshold
 are fit to a logistic regression. To decrease computing time, a curves that
-fail to meet this threshold are considered trivially negative and fit instead
-to a linear model.
+fail to meet this threshold are considered trivially negative and fit
+instead to a linear model.
 }
 \examples{
 path = system.file(

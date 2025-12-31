@@ -2,7 +2,7 @@
 % Please edit documentation in R/plotCrt.R
 \name{plotCrt}
 \alias{plotCrt}
-\title{Plot Crt Values from SummarizedExperiment}
+\title{Plot Relative Cycle Threshold Values by Gene}
 \usage{
 plotCrt(se)
 }
@@ -13,10 +13,11 @@ plotCrt(se)
 a ggplot2 figure
 }
 \description{
-Generates a box and whisker plot to visualize the distribution of observed
-Crt values for each assay target in an OpenArray plate.
+Generates a box and whisker plot visualizing the distribution of Crt values
+measured on an OpenArray plate by Gene.
 }
 \examples{
 data(example_se)
+
 plotCrt(example_se)
 }
