@@ -69,9 +69,9 @@ fitModelsToSE <- function(se, linear_threshold) {
     # construct new coldata from model list
     model_data <- DataFrame(
         regression_type = vapply(models, `[[`, character(1), "regression"),
-        midpoint_cycle  = round(vapply(models, `[[`, numeric(1), "x_mid"), 3),
-        midpoint_slope  = round(vapply(models, `[[`, numeric(1), "slope"), 3),
-        delta_fluo      = round(vapply(models, `[[`, numeric(1), "delta"), 3),
+        midpoint_cycle  = vapply(models, `[[`, numeric(1), "x_mid"),
+        midpoint_slope  = vapply(models, `[[`, numeric(1), "slope"),
+        delta_fluo      = vapply(models, `[[`, numeric(1), "delta"),
         row.names       = wells
     )
     
