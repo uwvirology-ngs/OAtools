@@ -77,6 +77,10 @@ excelToSummarizedExperiment <- function(path, num_results = 96) {
             "Task", "Reporter", "Quencher", "Crt", "Crt Mean", "Crt SD",
             "Amp Score", "Cq Conf", "Amp Status", "HIGHSD", "ROX Signal"
         ) |> 
+        dplyr::mutate(
+            `Crt Mean` = as.numeric(.data$`Crt Mean`),
+            `Crt SD`   = as.numeric(.data$`Crt SD`)            
+        ) |> 
         janitor::clean_names()
     
     # throw error in case of inappropriate inclusion of metadata in tibble
