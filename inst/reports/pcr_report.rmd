@@ -4,6 +4,7 @@ date: "`r Sys.Date()`"
 output: html_document
 params:
     data_path: NULL
+    model_results: NULL
 ---
 
 ```{r include = FALSE}
@@ -52,13 +53,44 @@ OAtools::plotCrt(se)
 
 ## Results
 ```{r}
-pcr_data |> 
-    dplyr::distinct(sample_name, target_name, .keep_all = TRUE) |> 
-    dplyr::select(sample_name, target_name, crt) |> 
-    knitr::kable(format = "html", caption = "OA Results") |> 
+
+result_table <- pcr_data |> dplyr::group_by(sample_name, target_name)
+
+if (model_results) {
+    result_table <- result_table |> dplyr::summarise(
+        mean_crt = mean(crt),
+        high_amp_status = dplyr::case_when(
+            any(.data$amp_status == "Amp") ~ "Amp",
+            any(.data$amp_status == "Inconclusive") ~ "Inconclusive",
+            TRUE ~ "No Amp"
+        ),
+        result = dplyr::case_when(
+            any(.data$result == "positive") ~ "Positive",
+            any(.data$result == "inconclusive") ~ "Inconclusive",
+            TRUE ~ "Negative"
+        ),
+        .groups = "drop"
+    )
+} else {
+    result_table <- result_table |> dplyr::summarise(
+        mean_crt = mean(crt),
+        high_amp_status = dplyr::case_when(
+            any(.data$amp_status == "Amp") ~ "Amp",
+            any(.data$amp_status == "Inconclusive") ~ "Inconclusive",
+            TRUE ~ "No Amp"
+        ),
+        .groups = "drop"
+    )
+}
+
+result_table |> 
+    dplyr::mutate(mean_crt = round(mean_crt, 1)) |> 
+    knitr::kable(
+        format = "html",
+        align = rep("l", ncol(result_table))
+    ) |> 
     kableExtra::kable_styling(
-        bootstrap_options = c("striped", "hover", "condensed"),
-        full_width = TRUE,
-        position = "center"
+        bootstrap_options = c("striped", "hover", "bordered"),
+        full_width = TRUE
     )
 ```

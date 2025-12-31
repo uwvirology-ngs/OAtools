@@ -2,20 +2,25 @@
 % Please edit documentation in R/generateReport.R
 \name{generateReport}
 \alias{generateReport}
-\title{Generate a report}
+\title{Generate a PCR Report}
 \usage{
-generateReport(se, path = tempdir())
+generateReport(se, path = tempdir(), model_results = FALSE)
 }
 \arguments{
 \item{se}{a SummarizedExperiment containing OpenArray qPCR data}
 
 \item{path}{intended outfile path, defaults to a temporary directory}
+
+\item{model_results}{boolean value indicating whether to include the
+\code{results} column, which is created when deriving results using the
+curve-fitting method}
 }
 \value{
-an .html report summarizing the OpenArray run results
+An HTML Report summarizing the OpenArray experiment
 }
 \description{
-Generates a .html report summarizing the OpenArray experiment.
+Knits an HTML report summarizing the OpenArray experiment and saves to the
+specified directory.
 }
 \examples{
 data(example_se)

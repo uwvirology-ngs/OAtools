@@ -1,18 +1,22 @@
-#' Generate a report
+#' Generate a PCR Report
 #'
-#' Generates a .html report summarizing the OpenArray experiment.
+#' Knits an HTML report summarizing the OpenArray experiment and saves to the 
+#' specified directory.
 #'
 #' @param se a SummarizedExperiment containing OpenArray qPCR data
 #' @param path intended outfile path, defaults to a temporary directory
-#'
-#' @returns an .html report summarizing the OpenArray run results
+#' @param model_results boolean value indicating whether to include the 
+#' `results` column, which is created when deriving results using the 
+#' curve-fitting method
+#' 
+#' @returns An HTML Report summarizing the OpenArray experiment
 #'
 #' @export
 #'
 #' @examples
 #' data(example_se)
 #' generateReport(se = example_se)
-generateReport <- function(se, path = tempdir()) {
+generateReport <- function(se, path = tempdir(), model_results = FALSE) {
     
     if (!requireNamespace("kableExtra", quietly = TRUE)) {
         stop(
@@ -28,7 +32,10 @@ generateReport <- function(se, path = tempdir()) {
         input = system.file("reports", "pcr_report.rmd", package = "OAtools"),
         output_file = "report.html",
         output_dir = path,
-        params = list(data_path = data_file),
+        params = list(
+            data_path = data_file,
+            model_results = model_results
+        ),
         envir = environment()
     )
 }
