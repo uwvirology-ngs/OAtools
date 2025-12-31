@@ -45,40 +45,38 @@ fitModelsToSE <- function(se, linear_threshold) {
     cycles <- rowData(se)$cycle
     fluo <- assay(se, "fluo")
     
-    # optimize a model to each well, save as a nested list
-    fits <- purrr::map(
+    # optimize a model to each well, saving each result to a list
+    models <- purrr::map(
         seq_along(wells),
-        ~ runFitCurve(
-            data.frame(
-                cycle = cycles, 
-                fam = as.numeric(fluo[, .x])
-            ),
-            linear_threshold
-        )
+        function(well) {
+            runFitCurve(
+                data.frame(cycle = cycles, fam = as.numeric(fluo[, well])),
+                linear_threshold
+            )
+        }
     )
     
     # build matrix of predicted fluorescence values 
-    fluo_pred <- vapply(
-        fits,
-        function(res) as.numeric(res$y_pred),
-        numeric(length(cycles))
+    fluo_pred_mat <- models |> vapply(
+        FUN = function(model) { as.numeric(model$y_pred) },
+        FUN.VALUE = numeric(length(cycles))
     )
+    dimnames(fluo_pred_mat) <- list(rownames(se), wells)
     
     # add predicted fluorescence values as an assay to the SummarizedExperiment
-    dimnames(fluo_pred) <- list(rownames(se), wells)
-    assays(se)$fluo_pred <- fluo_pred
+    assays(se)$fluo_pred <- fluo_pred_mat
     
     # construct new coldata from model list
-    col_results <- S4Vectors::DataFrame(
-        regression_type =       vapply(fits, `[[`, character(1), "regression"),
-        midpoint_cycle  = round(vapply(fits, `[[`, numeric(1), "x_mid"), 3),
-        midpoint_slope  = round(vapply(fits, `[[`, numeric(1), "slope"), 3),
-        delta_fluo      = round(vapply(fits, `[[`, numeric(1), "delta"), 3),
-        row.names = wells
+    model_data <- DataFrame(
+        regression_type = vapply(models, `[[`, character(1), "regression"),
+        midpoint_cycle  = round(vapply(models, `[[`, numeric(1), "x_mid"), 3),
+        midpoint_slope  = round(vapply(models, `[[`, numeric(1), "slope"), 3),
+        delta_fluo      = round(vapply(models, `[[`, numeric(1), "delta"), 3),
+        row.names       = wells
     )
     
     # append new colData to the SummarizedExperiment
-    colData(se) <- cbind(colData(se), col_results)
+    colData(se) <- cbind(colData(se), model_data)
     
     return(se)
 }
