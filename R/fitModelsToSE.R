@@ -7,12 +7,12 @@
 #' 
 #' PCR reactions with a change-in-fluorescence exceeding the linear_threshold 
 #' are fit to a logistic regression. To decrease computing time, a curves that 
-#' fail to meet this threshold are considered trivially negative and fit instead 
-#' to a linear model. 
+#' fail to meet this threshold are considered trivially negative and fit 
+#' instead to a linear model. 
 #'
 #' @param se A SummarizedExperiment object with OpenArray fluorescence data
-#' @param linear_threshold a numeric defining the minimal change-in-fluorescence 
-#' to fit a logistic model. 
+#' @param linear_threshold a numeric defining the minimal 
+#' change-in-fluorescence to fit a logistic model. 
 #'
 #' @returns a SummarizedExperiment
 #' 

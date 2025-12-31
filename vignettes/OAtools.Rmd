@@ -366,7 +366,8 @@ if (!require("NormqPCR", quietly = TRUE)) {
 }
 ```
 
-Then, to convert the SummarizedExperiment container into a *NormqPCR*-friendly instance of the qPCRBatch class, simply invoke the `seToQPCRBatch()` function
+Then, to convert the SummarizedExperiment container into a *NormqPCR*-friendly 
+instance of the qPCRBatch class, simply invoke the `seToQPCRBatch()` function
 on the SummarizedExperiment container. With our qPCRBatch object, we can, for
 example, normalize the cycle thresholds against a housekeeping gene.
 
