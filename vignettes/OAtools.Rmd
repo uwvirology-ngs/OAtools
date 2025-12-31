@@ -223,7 +223,7 @@ code to save the report directly to the user's machine.
 
 ```{r reporting-results, eval=FALSE}
 # generate a .html report from the run data
-generateReport(se = se, path = ".")
+generateReport(se = se)
 ```
 
 ## Analysis by Logistic Regression
