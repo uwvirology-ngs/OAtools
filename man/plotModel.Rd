@@ -37,6 +37,7 @@ data(example_se)
 plotModel(
     example_se, 
     well_id = "well_2665", 
-    include_mdpt_tangent = TRUE
+    include_mdpt_tangent = TRUE,
+    include_coldata_annotation = TRUE
 )
 }

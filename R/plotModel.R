@@ -28,7 +28,8 @@
 #' plotModel(
 #'     example_se, 
 #'     well_id = "well_2665", 
-#'     include_mdpt_tangent = TRUE
+#'     include_mdpt_tangent = TRUE,
+#'     include_coldata_annotation = TRUE
 #' )
 plotModel <- function(se, well_id, include_mdpt_tangent = FALSE,
                         include_coldata_annotation = FALSE) {
@@ -156,11 +157,13 @@ plotModel <- function(se, well_id, include_mdpt_tangent = FALSE,
 # optionally annotates the plot with information from the coldata   
 .annotateWithColdata <- function(col_data, fig, well_id) {
     
+    r_squared  <- col_data[well_id, "r_squared"]
     delta_fluo <- col_data[well_id, "delta_fluo"]
     mdpt_cycle <- col_data[well_id, "midpoint_cycle"]
     mdpt_slope <- col_data[well_id, "midpoint_slope"]
     
     text <- paste0(
+        "R\u00B2: ", round(r_squared, 4), "\n",
         "Change in Fluorescence: ", round(delta_fluo, 1), "\n",
         "Midpoint Cycle: ", round(mdpt_cycle, 1), "\n",
         "Midpoint Slope: ", round(mdpt_slope, 1)

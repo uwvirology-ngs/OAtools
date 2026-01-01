@@ -31,6 +31,18 @@ def derivative_5pl(x: float, A: float, D: float, C: float, B: float, S: float) -
     derivative: float = (D - A) * S * z**(-S - 1) * B * np.exp(B * (C - x))               # overall derivative
     return derivative
 
+# computes and returns the r_squared value between predicted and observed fluorescence values
+def compute_r_squared(y_data: np.ndarray, y_pred: np.ndarray) -> float:
+   residuals: np.ndarray = y_data - y_pred
+   ss_res = np.sum(residuals**2)
+   ss_tot = np.sum((y_data - np.mean(y_data))**2)
+
+   if ss_tot == 0:
+      return 0.0
+
+   r_squared = 1 - (ss_res / ss_tot)
+   return(float(r_squared))
+
 # -------------------------------------------------------- Curve Fitting ---------------------------------------------------
 
 
@@ -106,10 +118,11 @@ def fit_curve(data: pd.DataFrame, linear_threshold: float) -> dict[str, Any]:
     # generate and return model features and metadata
     model: dict[str, Any] = {
         "regression": regression_type,
+        "r_squared": compute_r_squared(y_data, y_pred),
         "delta": delta,
         "x_data": x_data,
-        "y_data": np.round(y_data, 3),
-        "y_pred": np.round(y_pred, 3),
+        "y_data": y_data,
+        "y_pred": y_pred,
         "coefficients": coefficients,
         "x_mid": x_mid,
         "y_mid": y_mid,
