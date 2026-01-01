@@ -41,8 +41,8 @@ plotCrt <- function(se) {
             na.rm = TRUE
         ) +
         labs(
-            title = "Crt Distribution by Gene",
-            x = "Crt",
+            title = expression("C"["rt"]*" Distribution by Gene"),
+            x = expression("C"["rt"]),
             y = "Gene"
         ) +
         theme_minimal(base_size = 12) +
