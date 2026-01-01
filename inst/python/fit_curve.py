@@ -94,11 +94,13 @@ def fit_curve(data: pd.DataFrame, linear_threshold: float) -> dict[str, Any]:
         A, D, C, B, S = params
         coefficients: dict[str, float] = {"A_fit": A, "D_fit": D, "B_fit": B, "C_fit": C, "S_fit": S}
         x_mid: float = midpoint_5pl(C, B, S)
+        y_mid: float = logistic_regression(x_mid, A, D, C, B, S)
         slope: float = derivative_5pl(x_mid, A, D, C, B, S)
     else:      
         M, C_ = params
         coefficients: dict[str, float] = {"M_fit": M, "C_fit": C_}
-        x_mid: float = x_data.max()
+        x_mid: float = x_data.max() / 2
+        y_mid: float = linear_regression(x_mid, M, C_)
         slope: float = M
     
     # generate and return model features and metadata
@@ -110,6 +112,7 @@ def fit_curve(data: pd.DataFrame, linear_threshold: float) -> dict[str, Any]:
         "y_pred": np.round(y_pred, 3),
         "coefficients": coefficients,
         "x_mid": x_mid,
+        "y_mid": y_mid,
         "slope": slope
     }
     

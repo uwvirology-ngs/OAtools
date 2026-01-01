@@ -70,6 +70,7 @@ fitModelsToSE <- function(se, linear_threshold) {
     model_data <- DataFrame(
         regression_type = vapply(models, `[[`, character(1), "regression"),
         midpoint_cycle  = vapply(models, `[[`, numeric(1), "x_mid"),
+        midpoint_fluo   = vapply(models, `[[`, numeric(1), "y_mid"),
         midpoint_slope  = vapply(models, `[[`, numeric(1), "slope"),
         delta_fluo      = vapply(models, `[[`, numeric(1), "delta"),
         row.names       = wells

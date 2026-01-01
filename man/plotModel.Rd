@@ -4,13 +4,17 @@
 \alias{plotModel}
 \title{Plot Fluorescence Values Predicted by Model}
 \usage{
-plotModel(se, well_id)
+plotModel(se, well_id, include_mdpt_tangent = FALSE)
 }
 \arguments{
 \item{se}{a SummarizedExperiment object containing OpenArray qPCR data}
 
 \item{well_id}{a character representing the name of the well to plot as
 listed in the assay matrix}
+
+\item{include_mdpt_tangent}{boolean determines whether to annotate the
+midpoint of the reaction and draw a tangent line to the model curve at
+that point}
 }
 \value{
 a ggplot2 figure
@@ -22,5 +26,9 @@ measured fluorescence vs. cycle data for a particular well.
 \examples{
 data(example_se)
 
-plotModel(example_se, well_id = "well_2665")
+plotModel(
+    example_se, 
+    well_id = "well_2665", 
+    include_mdpt_tangent = TRUE
+)
 }
