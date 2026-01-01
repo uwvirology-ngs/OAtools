@@ -9,6 +9,8 @@
 #' @param include_mdpt_tangent boolean determines whether to annotate the 
 #' midpoint of the reaction and draw a tangent line to the model curve at 
 #' that point
+#' @param include_coldata_annotation boolean determines whether to annotate 
+#' the coldata onto the top left of the plot. 
 #'
 #' @returns a ggplot2 figure
 #' 
@@ -28,12 +30,18 @@
 #'     well_id = "well_2665", 
 #'     include_mdpt_tangent = TRUE
 #' )
-plotModel <- function(se, well_id, include_mdpt_tangent = FALSE) {
+plotModel <- function(se, well_id, include_mdpt_tangent = FALSE,
+                        include_coldata_annotation = FALSE) {
     
-    # pull list of cycles
+    # pull well metadata from colData
+    col_data <- as.data.frame(colData(se))
+    sample <- col_data[well_id, "sample_name"]
+    gene   <- col_data[well_id, "target_name"]
+    
+    
+    # pull fluorescence data and cycle numbers from assay matrix
     cycles <- seq_along(assays(se)$fluo[, well_id])
     
-    # pull predicted and observed fluorescence values
     well_data <- DataFrame(
         cycle = cycles,
         fluo = assays(se)$fluo[, well_id],
@@ -44,13 +52,23 @@ plotModel <- function(se, well_id, include_mdpt_tangent = FALSE) {
     fig <- .constructModelPlot(
         well_data = well_data, 
         cycles = cycles, 
-        well_id = well_id
+        well_id = well_id,
+        sample = sample, 
+        gene = gene
     )
     
     # optionally annotate the midpoint with a point and tangent line
     if (include_mdpt_tangent) {
-        col_data <- as.data.frame(colData(se))
         fig <- .annotateMidpoint(
+            col_data = col_data, 
+            fig = fig, 
+            well_id = well_id
+        )
+    }
+
+    # optionally annotates the plot with information from the coldata    
+    if (include_coldata_annotation) {
+        fig <- .annotateWithColdata(
             col_data = col_data, 
             fig = fig, 
             well_id = well_id
@@ -61,7 +79,7 @@ plotModel <- function(se, well_id, include_mdpt_tangent = FALSE) {
 }
 
 # build model plot with predicted vs. observed fluorescence values
-.constructModelPlot <- function(well_data, cycles, well_id) {
+.constructModelPlot <- function(well_data, cycles, well_id, sample, gene) {
     
     fig <- well_data |> 
         ggplot(mapping = aes(x = .data$cycle)) +
@@ -94,7 +112,7 @@ plotModel <- function(se, well_id, include_mdpt_tangent = FALSE) {
             x = "Cycle",
             y = "Fluorescence",
             title = "Model Prediction vs. Observed Fluorescence",
-            subtitle = well_id
+            subtitle = paste0(sample, "        ", gene, "        ", well_id)
         ) +
         theme_minimal(base_size = 12) +
         theme(
@@ -102,7 +120,7 @@ plotModel <- function(se, well_id, include_mdpt_tangent = FALSE) {
             axis.text.y = element_text(size = 12),
             axis.title = element_text(size = 15),
             plot.title = element_text(size = 18, face = "bold", hjust = 0.5),
-            plot.subtitle = element_text(size = 15, hjust = 0.5)
+            plot.subtitle = element_text(size = 12, hjust = 0.5)
         )
     
     return(fig)
@@ -130,6 +148,33 @@ plotModel <- function(se, well_id, include_mdpt_tangent = FALSE) {
             y = mdpt_fluo,
             color = "darkgreen",
             size = 3, alpha = 0.6
+        )
+    
+    return(fig)
+}
+
+# optionally annotates the plot with information from the coldata   
+.annotateWithColdata <- function(col_data, fig, well_id) {
+    
+    delta_fluo <- col_data[well_id, "delta_fluo"]
+    mdpt_cycle <- col_data[well_id, "midpoint_cycle"]
+    mdpt_slope <- col_data[well_id, "midpoint_slope"]
+    
+    text <- paste0(
+        "Change in Fluorescence: ", round(delta_fluo, 1), "\n",
+        "Midpoint Cycle: ", round(mdpt_cycle, 1), "\n",
+        "Midpoint Slope: ", round(mdpt_slope, 1)
+    )
+    
+    fig <- fig +
+        annotate(
+            "text",
+            x = 3, y = Inf,
+            label = text, 
+            hjust = 0, vjust = 1.5,
+            size = 4, 
+            fontface = "italic",
+            color = "black"
         )
     
     return(fig)

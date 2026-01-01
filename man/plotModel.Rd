@@ -4,7 +4,12 @@
 \alias{plotModel}
 \title{Plot Fluorescence Values Predicted by Model}
 \usage{
-plotModel(se, well_id, include_mdpt_tangent = FALSE)
+plotModel(
+  se,
+  well_id,
+  include_mdpt_tangent = FALSE,
+  include_coldata_annotation = FALSE
+)
 }
 \arguments{
 \item{se}{a SummarizedExperiment object containing OpenArray qPCR data}
@@ -15,6 +20,9 @@ listed in the assay matrix}
 \item{include_mdpt_tangent}{boolean determines whether to annotate the
 midpoint of the reaction and draw a tangent line to the model curve at
 that point}
+
+\item{include_coldata_annotation}{boolean determines whether to annotate
+the coldata onto the top left of the plot.}
 }
 \value{
 a ggplot2 figure
