@@ -53,7 +53,7 @@ def fit_curve(data: pd.DataFrame, linear_threshold: float) -> dict[str, Any]:
     optimization to a 5-parameter logistic curve fails. 
 
     Args:
-        data (pd.DataFrame): data for a single reaction, expected colnames are 'fam' and 'cycle'
+        data (pd.DataFrame): data for a single reaction, expected colnames are 'fluo' and 'cycle'
         linear_threshold (float): minimum overall change in fluorescence to attempt fitting a 5pl regression
 
     Returns: 
@@ -61,15 +61,15 @@ def fit_curve(data: pd.DataFrame, linear_threshold: float) -> dict[str, Any]:
     """
     
     # precondition checks
-    if not {'cycle', 'fam'}.issubset(data.columns):
-      raise ValueError("missing required columns, ensure data frame passed to fit_curve contains 'cycle' and 'fam' columns.")
+    if not {'cycle', 'fluo'}.issubset(data.columns):
+      raise ValueError("missing required columns, ensure data frame passed to fit_curve contains 'cycle' and 'fluo' columns.")
     
     if data['cycle'].duplicated().any():
       raise ValueError("duplicate values present in cycle column. likely cause is several runs of data passed to fit_curve function.")
     
     # convert run data to numpy array
-    x_data: np.ndarray = data['cycle'].to_numpy()                   # load fam/cycle data as numpy arrays
-    y_data: np.ndarray = data['fam'].to_numpy()
+    x_data: np.ndarray = data['cycle'].to_numpy()                   # load fluo/cycle data as numpy arrays
+    y_data: np.ndarray = data['fluo'].to_numpy()
     delta: float = np.mean(y_data[-3:]) - np.mean(y_data[:3])       # compute overall change in fluorescence as difference from final three to first three cycles
     
     # engine for fitting 5pl equation

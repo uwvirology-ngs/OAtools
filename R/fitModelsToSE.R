@@ -1,3 +1,5 @@
+utils::globalVariables("fit_curve")
+
 #' Fit Models to SummarizedExperiment
 #'
 #' This function invokes the run_fit_curve() function for each PCR reaction 
@@ -49,8 +51,8 @@ fitModelsToSE <- function(se, linear_threshold) {
     models <- purrr::map(
         seq_along(wells),
         function(well) {
-            runFitCurve(
-                data.frame(cycle = cycles, fam = as.numeric(fluo[, well])),
+            .runFitCurve(
+                data.frame(cycle = cycles, fluo = as.numeric(fluo[, well])),
                 linear_threshold
             )
         }
@@ -81,4 +83,32 @@ fitModelsToSE <- function(se, linear_threshold) {
     colData(se) <- cbind(colData(se), model_data)
     
     return(se)
+}
+
+#' Run the fit_curve() function
+#' 
+#' A thin R wrapper for the python3 function fit_curve(), which attempts to 
+#' optimize 5-parameter logistic regressions to PCR fluorescence curves. 
+#'
+#' @param data A `data.frame` with the following required columns: 
+#' \describe{
+#'     \item{cycle}{PCR cycle number}
+#'     \item{fluo}{observed fluorescence}
+#' }
+#' @param linear_threshold PCR reactions with overall changes in fluorescence 
+#' below this value will not be optimized to logistic regressions.
+#'
+#' @returns The model as a nested list
+.runFitCurve <- function(data, linear_threshold) {
+    basilisk::basiliskRun(
+        env = OAtools_env,
+        fun = function() {
+            reticulate::source_python(system.file(
+                "python", 
+                "fit_curve.py", 
+                package = "OAtools"
+            ))
+            return(fit_curve(data, linear_threshold))
+        }
+    )
 }
