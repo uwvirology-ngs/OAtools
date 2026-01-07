@@ -1,69 +1,67 @@
-#' Run data from a gene expression experiment
+#' Example Raw OpenArray Gene Expression Data
 #'
 #' @docType data
 #'
 #' @description
-#' This Excel file (.xlsx) contains an example subset of OpenArray
-#' gene expression run data intended for use with package examples
-#' and unit testing. This dataset includes twelve specimens
-#' tested on four targets.
+#' The first of two Excel files storing run data from separate OpenArray 
+#' gene expression experiments. The context behind the experiment was 
+#' respiratory tract microbiota profiling on human nasopharyngeal swabs from 
+#' patients experiencing respiratory syndromes. 
 #'
 #' @details
-#' Example run data is stored in the `inst/extdata/` directory of the package.
 #' Access this file with:
+#' `system.file("extdata", "oa_gene_expression_1.xlsx", package = "OAtools")`
 #'
-#' `system.file("extdata", "oa_gene_expression_batch1.xlsx",
-#'              package = "OAtools")`.
-#'
-#' @format An Excel file (`.xlsx`) with two tabs:
+#' @format An Excel file (`.xlsx`) with three tabs:
 #' \describe{
-#'   \item{Multicomponent Data}{Multicomponent fluorescence values for each
-#'   well position and cycle number}
-#'   \item{Results}{Run results and QC metrics output by QuantStudio Software}
+#'     \item{Amplification Data}{normalized fluorescence by cycle number}
+#'     \item{Multicomponent Data}{spectral contribution of the reporter dye
+#'     by cycle number}
+#'     \item{Results}{PCR results, sample metadata, and QC metrics}
 #' }
 #'
 #' @source
-#' Exported from QuantStudio 12K Flex Software after a gene expression run,
-#' then filtered down to a smaller file size.
+#' This file was exported from QuantStudio 12K Flex Software after a gene 
+#' expression run, then filtered down to include 12 samples and 4 genes for 
+#' file size concerns. 
 #'
 #' @keywords
 #' data
 #'
 #' @name
-#' oa_gene_expression_batch1
+#' oa_gene_expression_1
 NULL
 
-#' Run data from a second gene expression experiment
+#' Example Raw OpenArray Gene Expression Data
 #'
 #' @docType data
 #'
 #' @description
-#' This Excel file (.xlsx) contains an example subset of OpenArray gene
-#' expression run data intended for use with package examples and
-#' unit testing. This dataset includes twelve new specimens tested
-#' separately on the same four targets.
+#' The second of two Excel files storing run data from separate OpenArray 
+#' gene expression experiments. The context behind the experiment was 
+#' respiratory tract microbiota profiling on human nasopharyngeal swabs on 
+#' patients experiencing respiratory syndromes. 
 #'
 #' @details
-#' Example run data is stored in the `inst/extdata/` directory of the package.
 #' Access this file with:
+#' `system.file("extdata", "oa_gene_expression_2.xlsx", package = "OAtools")`
 #'
-#' `system.file("extdata", "oa_gene_expression_batch2.xlsx",
-#'              package = "OAtools")`.
-#'
-#' @format An Excel file (`.xlsx`) with two tabs:
+#' @format An Excel file (`.xlsx`) with three tabs:
 #' \describe{
-#'   \item{Multicomponent Data}{Multicomponent fluorescence values for each
-#'   well position and cycle number}
-#'   \item{Results}{Run results and QC metrics output by QuantStudio Software}
+#'     \item{Amplification Data}{normalized fluorescence by cycle number}
+#'     \item{Multicomponent Data}{spectral contribution of the reporter dye
+#'     by cycle number}
+#'     \item{Results}{PCR results, sample metadata, and QC metrics}
 #' }
 #'
 #' @source
-#' Exported from QuantStudio 12K Flex Software after a gene expression run,
-#' then filtered down to a smaller file size.
+#' This file was exported from QuantStudio 12K Flex Software after a gene 
+#' expression run, then filtered down to include 12 samples and 4 genes for 
+#' file size concerns. 
 #'
 #' @keywords
 #' data
 #'
 #' @name
-#' oa_gene_expression_batch2
+#' oa_gene_expression_2
 NULL

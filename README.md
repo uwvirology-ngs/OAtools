@@ -61,7 +61,7 @@ we can load the experiment into a SummarizedExperiment container.
 # save filepath to example OpenArray gene expression run data
 path = system.file(
     "extdata", 
-    "oa_gene_expression_batch1.xlsx", 
+    "oa_gene_expression_1.xlsx", 
     package = "OAtools"
 )
 

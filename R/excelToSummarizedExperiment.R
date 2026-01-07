@@ -19,7 +19,7 @@
 #' @examples
 #' path = system.file(
 #'     "extdata", 
-#'     "oa_gene_expression_batch1.xlsx", 
+#'     "oa_gene_expression_1.xlsx", 
 #'     package = "OAtools"
 #' )
 #' se <- excelToSummarizedExperiment(path = path, num_results = 96)
