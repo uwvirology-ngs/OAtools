@@ -34,6 +34,6 @@ path = system.file(
     package = "OAtools"
 )
 
-se <- excelToSummarizedExperiment(path = path, num_results = 96)
+se <- excelToSE(excel_path = path)
 se <- fitModelsToSE(se = se, linear_threshold = 500)
 }

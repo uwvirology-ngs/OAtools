@@ -119,7 +119,7 @@ which is included with the package. This data is a sample from a gene expression
 experiment our lab, the University of Washington Virology Lab, ran on human 
 nasal swabs to screen for respiratory pathogens. 
 
-With the filepath specified, we use the `excelToSummarizedExperiment()` 
+With the filepath specified, we use the `excelToSE()` 
 function to read the .xlsx file containing the run data and load it into a 
 SummarizedExperiment object. SummarizedExperiment is an S4 Class from 
 Bioconductor used to stored matrix-like assay data and associated metadata. Note
@@ -135,10 +135,7 @@ path = system.file(
 )
 
 # transform the run data into a SummarizedExperiment
-se <- excelToSummarizedExperiment(
-    path = path, 
-    num_results = 96
-)
+se <- excelToSE(excel_path = path)
 ```
 
 ## Experiment Structure
@@ -152,15 +149,15 @@ though-hole on the OpenArray plate. We may access the assay matrix from
 our SummarizedExperiment object by invoking `assay(se)` and coercing 
 the assay matrix into a dataframe with `as.data.frame()`.
 
-If we want to be more explicit, we can also call `assays(se)$fluo` to retrieve 
-the observed fluorescence values, which is useful when we add more assay 
-matrices downstream. Here we display a slice of the fluorescence data from 
-cycles 11 to 20; notice that the rows represent cycle number and the columns 
-represent individual through-holes on the OpenArray plate. 
+If we want to be more explicit, we can also call `assays(se)$fluo_reporter` 
+to retrieve the observed fluorescence values, which is useful when we add more 
+assay matrices downstream. Here we display a slice of the fluorescence data 
+from cycles 11 to 20; notice that the rows represent cycle number and the 
+columns represent individual through-holes on the OpenArray plate. 
 
 ```{r structure-assay_matrix}
 # retrieve the assay matrix and display a subset as a data frame
-as.data.frame(assays(se)$fluo) |> 
+as.data.frame(assays(se)$fluo_reporter) |> 
     dplyr::select(well_2321:well_2386) |>
     dplyr::slice(11:20)
 ```
@@ -217,7 +214,7 @@ if (!require("kableExtra", quietly = TRUE)) {
 ```
 
 The following code block generates the PCR report assuming that data has been
-loaded in using `excelToSummarizedExperiment()`. Note that it does not 
+loaded in using `excelToSE()`. Note that it does not 
 automatically execute when constructing this vignette as the function calls 
 code to save the report directly to the user's machine. 
 
@@ -254,7 +251,7 @@ path = system.file(
 )
 
 # transform the run data into a SummarizedExperiment
-se <- excelToSummarizedExperiment(path = path, num_results = 96)
+se <- excelToSE(excel_path = path)
 ```
 
 ### Optimizing Models to PCR Curves

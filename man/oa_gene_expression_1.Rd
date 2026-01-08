@@ -10,7 +10,7 @@ An Excel file (\code{.xlsx}) with three tabs:
 \item{Amplification Data}{normalized fluorescence by cycle number}
 \item{Multicomponent Data}{spectral contribution of the reporter dye
 by cycle number}
-\item{Results}{PCR results, sample metadata, and QC metrics}
+\item{Results}{PCR results, PCR well metadata, and QC metrics}
 }
 }
 \source{

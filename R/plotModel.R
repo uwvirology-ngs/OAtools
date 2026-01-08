@@ -41,12 +41,12 @@ plotModel <- function(se, well_id, include_mdpt_tangent = FALSE,
     
     
     # pull fluorescence data and cycle numbers from assay matrix
-    cycles <- seq_along(assays(se)$fluo[, well_id])
+    cycles <- seq_along(assays(se)$fluo_reporter[, well_id])
     
     well_data <- DataFrame(
         cycle = cycles,
-        fluo = assays(se)$fluo[, well_id],
-        fluo_pred = assays(se)$fluo_pred[, well_id]
+        fluo = assays(se)$fluo_reporter[, well_id],
+        fluo_reporter_pred = assays(se)$fluo_reporter_pred[, well_id]
     )
     
     # build model plot with predicted vs. observed fluorescence values
@@ -106,7 +106,7 @@ plotModel <- function(se, well_id, include_mdpt_tangent = FALSE,
             size = 1.2, alpha = 1
         ) +
         geom_line(
-            aes(y = .data$fluo_pred, colour = "Predicted"), 
+            aes(y = .data$fluo_reporter_pred, colour = "Predicted"), 
             linewidth = 0.8, alpha = 0.8
         ) +
         labs(

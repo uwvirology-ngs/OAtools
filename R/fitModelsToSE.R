@@ -32,20 +32,20 @@ utils::globalVariables("fit_curve")
 #'     package = "OAtools"
 #' )
 #' 
-#' se <- excelToSummarizedExperiment(path = path, num_results = 96)
+#' se <- excelToSE(excel_path = path)
 #' se <- fitModelsToSE(se = se, linear_threshold = 500)
 fitModelsToSE <- function(se, linear_threshold) {
     
     # input validation
     stopifnot(
         inherits(se, "SummarizedExperiment"),
-        "fluo" %in% assayNames(se)
+        "fluo_reporter" %in% assayNames(se)
     )
     
     # pull observed fluorescence data for the experiment
     wells <- colnames(se)
     cycles <- rowData(se)$cycle
-    fluo <- assay(se, "fluo")
+    fluo <- assay(se, "fluo_reporter")
     
     # optimize a model to each well, saving each result to a list
     models <- purrr::map(
@@ -66,7 +66,7 @@ fitModelsToSE <- function(se, linear_threshold) {
     dimnames(fluo_pred_mat) <- list(rownames(se), wells)
     
     # add predicted fluorescence values as an assay to the SummarizedExperiment
-    assays(se)$fluo_pred <- fluo_pred_mat
+    assays(se)$fluo_reporter_pred <- fluo_pred_mat
     
     # construct new coldata from model list
     model_data <- DataFrame(

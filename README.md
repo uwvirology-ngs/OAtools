@@ -66,7 +66,7 @@ path = system.file(
 )
 
 # transform the run data into a SummarizedExperiment
-se <- excelToSummarizedExperiment(
+se <- excelToSE(
     path = path, 
     num_results = 96
 )
