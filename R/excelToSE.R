@@ -39,13 +39,13 @@ excelToSE <- function(excel_path, header_rows = 17, skip = 19) {
     
     # 2. build assay matrices (cell values ~ fluorescence measurements)
     amp_matrix <- amplification_data |> 
-        dplyr::select(-.data$cycle) |> as.matrix() 
+        dplyr::select(-"cycle") |> as.matrix() 
     
     rownames(amp_matrix) <- paste0("cycle_", amplification_data$cycle)
     colnames(amp_matrix) <- paste0("well_", colnames(amp_matrix))
     
     multi_matrix <- multicomponent_data |> 
-        dplyr::select(-.data$cycle) |> as.matrix()
+        dplyr::select(-"cycle") |> as.matrix()
     
     rownames(multi_matrix) <- paste0("cycle_", multicomponent_data$cycle)
     colnames(multi_matrix) <- paste0("well_", colnames(multi_matrix))
@@ -88,8 +88,8 @@ excelToSE <- function(excel_path, header_rows = 17, skip = 19) {
     # transform normalized fluorescence data into tidy format
     amplification_data <- amplification_data |> 
         tidyr::pivot_wider(
-            names_from = .data$well,
-            values_from = .data$delta_r
+            names_from = "well",
+            values_from = "delta_r"
         ) |> 
         dplyr::arrange(.data$cycle)
     
@@ -110,8 +110,8 @@ excelToSE <- function(excel_path, header_rows = 17, skip = 19) {
     # transform multicomponent fluorescence data into tidy format
     multicomponent_data <- multicomponent_data |> 
         tidyr::pivot_wider(
-            names_from = .data$well,
-            values_from = .data$fam
+            names_from = "well",
+            values_from = "fam"
         ) |> 
         dplyr::arrange(.data$cycle)
     
