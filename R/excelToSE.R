@@ -10,7 +10,8 @@
 #'
 #' @returns OpenArray PCR data as a SummarizedExperiment object
 #' 
-#' @importFrom S4Vectors DataFrame SimpleList
+#' @import S4Vectors
+#' 
 #' @importFrom SummarizedExperiment SummarizedExperiment
 #' @importFrom rlang .data
 #' 
