@@ -104,29 +104,29 @@ def fit_curve(data: pd.DataFrame, linear_threshold: float) -> dict[str, Any]:
     # save model features
     if regression_type == "5pl":  
         A, D, C, B, S = params
-        coefficients: dict[str, float] = {"A_fit": A, "D_fit": D, "B_fit": B, "C_fit": C, "S_fit": S}
+        coefficients: dict[str, float] = {"A": A, "D": D, "B": B, "C": C, "S": S}
         x_mid: float = midpoint_5pl(C, B, S)
         y_mid: float = logistic_regression(x_mid, A, D, C, B, S)
         slope: float = derivative_5pl(x_mid, A, D, C, B, S)
     else:      
         M, C_ = params
-        coefficients: dict[str, float] = {"M_fit": M, "C_fit": C_}
+        coefficients: dict[str, float] = {"M": M, "C": C_}
         x_mid: float = x_data.max() / 2
         y_mid: float = linear_regression(x_mid, M, C_)
         slope: float = M
     
     # generate and return model features and metadata
     model: dict[str, Any] = {
-        "regression": regression_type,
+        "regression_type": regression_type,
         "r_squared": compute_r_squared(y_data, y_pred),
-        "delta": delta,
-        "x_data": x_data,
-        "y_data": y_data,
+        "delta_y": delta,
+        "x_obs": x_data,
+        "y_obs": y_data,
         "y_pred": y_pred,
-        "coefficients": coefficients,
-        "x_mid": x_mid,
-        "y_mid": y_mid,
-        "slope": slope
+        "parameters": coefficients,
+        "x_midpoint": x_mid,
+        "y_midpoint": y_mid,
+        "slope_midpoint": slope
     }
     
     return model

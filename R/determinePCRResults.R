@@ -49,10 +49,12 @@ determinePCRResults <- function(se, key_path) {
     data <- as.data.frame(colData(se)) |>
         dplyr::left_join(key, by = c("target_name" = "target")) |> 
         dplyr::mutate(midpoint_slope = purrr::map_dbl(
-            paste0("well_", .data$well), function(well) { models[[well]]$slope }
+            paste0("well_", .data$well), 
+            function(well) { models[[well]]$slope_midpoint }
         )) |> 
         dplyr::mutate(delta_fluo = purrr::map_dbl(
-            paste0("well_", .data$well), function(well) { models[[well]]$delta }
+            paste0("well_", .data$well), 
+            function(well) { models[[well]]$delta_y }
         ))
     
     # apply the rules of the key and append the results to the tibble

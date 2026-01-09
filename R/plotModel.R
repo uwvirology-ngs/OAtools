@@ -129,16 +129,17 @@ plotModel <- function(se, well_id, assay_name,
     fig <- fig + 
         geom_abline(
             aes(
-                slope = model$slope,
-                intercept = model$y_mid - (model$slope * model$x_mid),
+                slope = model$slope_midpoint,
+                intercept = model$y_midpoint - 
+                    (model$slope_midpoint * model$x_midpoint),
                 colour = "Tangent"
             ),
             alpha = 0.6
         ) +
         annotate(
             "point",
-            x = model$x_mid, 
-            y = model$y_mid,
+            x = model$x_midpoint, 
+            y = model$y_midpoint,
             color = "darkgreen",
             size = 3, alpha = 0.6
         )
@@ -151,9 +152,9 @@ plotModel <- function(se, well_id, assay_name,
     
     text <- paste0(
         "R\u00B2: ", round(model$r_squared, 4), "\n",
-        "Change in Fluorescence: ", round(model$delta, 1), "\n",
-        "Midpoint Cycle: ", round(model$x_mid, 1), "\n",
-        "Midpoint Slope: ", round(model$slope, 1)
+        "Change in Fluorescence: ", round(model$delta_y, 1), "\n",
+        "Midpoint Cycle: ", round(model$x_midpoint, 1), "\n",
+        "Midpoint Slope: ", round(model$slope_midpoint, 1)
     )
     
     fig <- fig +
