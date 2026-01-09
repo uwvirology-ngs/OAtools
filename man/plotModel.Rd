@@ -7,6 +7,7 @@
 plotModel(
   se,
   well_id,
+  assay_name,
   include_mdpt_tangent = FALSE,
   include_coldata_annotation = FALSE
 )
@@ -16,6 +17,9 @@ plotModel(
 
 \item{well_id}{a character representing the name of the well to plot as
 listed in the assay matrix}
+
+\item{assay_name}{name for the assay matrix from which to pull observed
+fluorescence values, either \code{fluo_reporter} or \code{fluo_normalized}}
 
 \item{include_mdpt_tangent}{boolean determines whether to annotate the
 midpoint of the reaction and draw a tangent line to the model curve at
@@ -37,6 +41,7 @@ data(example_se)
 plotModel(
     example_se, 
     well_id = "well_2665", 
+    assay_name = "fluo_reporter",
     include_mdpt_tangent = TRUE,
     include_coldata_annotation = TRUE
 )

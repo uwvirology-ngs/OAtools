@@ -6,6 +6,8 @@
 #' @param se a SummarizedExperiment object containing OpenArray qPCR data
 #' @param well_id a character representing the name of the well to plot as 
 #' listed in the assay matrix
+#' @param assay_name name for the assay matrix from which to pull observed
+#' fluorescence values, either `fluo_reporter` or `fluo_normalized`
 #' @param include_mdpt_tangent boolean determines whether to annotate the 
 #' midpoint of the reaction and draw a tangent line to the model curve at 
 #' that point
@@ -28,11 +30,16 @@
 #' plotModel(
 #'     example_se, 
 #'     well_id = "well_2665", 
+#'     assay_name = "fluo_reporter",
 #'     include_mdpt_tangent = TRUE,
 #'     include_coldata_annotation = TRUE
 #' )
-plotModel <- function(se, well_id, include_mdpt_tangent = FALSE,
+plotModel <- function(se, well_id, assay_name,
+                        include_mdpt_tangent = FALSE,
                         include_coldata_annotation = FALSE) {
+    
+    # extract model from metadata
+    model <- metadata(se)[[paste0(assay_name, "_models")]][[well_id]]
     
     # pull well metadata from colData
     col_data <- as.data.frame(colData(se))
@@ -41,39 +48,28 @@ plotModel <- function(se, well_id, include_mdpt_tangent = FALSE,
     
     
     # pull fluorescence data and cycle numbers from assay matrix
-    cycles <- seq_along(assays(se)$fluo_reporter[, well_id])
+    cycles <- rowData(se)$cycle
     
     well_data <- DataFrame(
         cycle = cycles,
-        fluo = assays(se)$fluo_reporter[, well_id],
-        fluo_reporter_pred = assays(se)$fluo_reporter_pred[, well_id]
+        fluo = assays(se)[[assay_name]][, well_id],
+        fluo_pred = assays(se)[[paste0(assay_name, "_pred")]][, well_id]
     )
     
     # build model plot with predicted vs. observed fluorescence values
     fig <- .constructModelPlot(
-        well_data = well_data, 
-        cycles = cycles, 
-        well_id = well_id,
-        sample = sample, 
-        gene = gene
+        well_data = well_data, cycles = cycles, 
+        well_id = well_id, sample = sample, gene = gene
     )
     
     # optionally annotate the midpoint with a point and tangent line
     if (include_mdpt_tangent) {
-        fig <- .annotateMidpoint(
-            col_data = col_data, 
-            fig = fig, 
-            well_id = well_id
-        )
+        fig <- .annotateMidpoint(fig = fig, model = model)
     }
 
-    # optionally annotates the plot with information from the coldata    
+    # optionally annotates the plot with information from the model  
     if (include_coldata_annotation) {
-        fig <- .annotateWithColdata(
-            col_data = col_data, 
-            fig = fig, 
-            well_id = well_id
-        )
+        fig <- .annotateWithColdata(fig = fig, model = model)
     }
     
     return(fig)
@@ -106,7 +102,7 @@ plotModel <- function(se, well_id, include_mdpt_tangent = FALSE,
             size = 1.2, alpha = 1
         ) +
         geom_line(
-            aes(y = .data$fluo_reporter_pred, colour = "Predicted"), 
+            aes(y = .data$fluo_pred, colour = "Predicted"), 
             linewidth = 0.8, alpha = 0.8
         ) +
         labs(
@@ -128,25 +124,21 @@ plotModel <- function(se, well_id, include_mdpt_tangent = FALSE,
 }
 
 # optionally annotate the midpoint with a point and tangent line
-.annotateMidpoint <- function(col_data, fig, well_id) {
-    
-    mdpt_cycle <- col_data[well_id, "midpoint_cycle"]
-    mdpt_fluo  <- col_data[well_id, "midpoint_fluo"]
-    mdpt_slope <- col_data[well_id, "midpoint_slope"]
+.annotateMidpoint <- function(fig, model) {
     
     fig <- fig + 
         geom_abline(
             aes(
-                slope = mdpt_slope,
-                intercept = mdpt_fluo - (mdpt_slope * mdpt_cycle),
+                slope = model$slope,
+                intercept = model$y_mid - (model$slope * model$x_mid),
                 colour = "Tangent"
             ),
             alpha = 0.6
         ) +
         annotate(
             "point",
-            x = mdpt_cycle, 
-            y = mdpt_fluo,
+            x = model$x_mid, 
+            y = model$y_mid,
             color = "darkgreen",
             size = 3, alpha = 0.6
         )
@@ -155,18 +147,13 @@ plotModel <- function(se, well_id, include_mdpt_tangent = FALSE,
 }
 
 # optionally annotates the plot with information from the coldata   
-.annotateWithColdata <- function(col_data, fig, well_id) {
-    
-    r_squared  <- col_data[well_id, "r_squared"]
-    delta_fluo <- col_data[well_id, "delta_fluo"]
-    mdpt_cycle <- col_data[well_id, "midpoint_cycle"]
-    mdpt_slope <- col_data[well_id, "midpoint_slope"]
+.annotateWithColdata <- function(fig, model) {
     
     text <- paste0(
-        "R\u00B2: ", round(r_squared, 4), "\n",
-        "Change in Fluorescence: ", round(delta_fluo, 1), "\n",
-        "Midpoint Cycle: ", round(mdpt_cycle, 1), "\n",
-        "Midpoint Slope: ", round(mdpt_slope, 1)
+        "R\u00B2: ", round(model$r_squared, 4), "\n",
+        "Change in Fluorescence: ", round(model$delta, 1), "\n",
+        "Midpoint Cycle: ", round(model$x_mid, 1), "\n",
+        "Midpoint Slope: ", round(model$slope, 1)
     )
     
     fig <- fig +

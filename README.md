@@ -80,7 +80,7 @@ key defines thresholds that separate curves into positive and negative results.
 
 ```r
 # optimize model curves to each PCR reaction
-se <- fitModelsToSE(
+se <- computeModels(
     se = se,
     linear_threshold = 500
 )
@@ -93,7 +93,7 @@ key_path = system.file(
 )
 
 # assign a PCR result according to the key
-se <- assignCallsToSE(
+se <- determinePCRResults(
     se = se, 
     key_path = key_path
 )
