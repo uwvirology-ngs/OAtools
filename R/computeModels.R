@@ -62,8 +62,8 @@ computeModels <- function(se, assay_name, linear_threshold = 400) {
     cycles <- rowData(se)$cycle
     fluo <- assay(se, assay_name)
     
-    # optimize models for each PCR well; save to experiment metadata
-    models <- purrr::map(
+    # optimize model curves for each PCR well; save to experiment metadata
+    metadata(se)[[paste0(assay_name, "_models")]] <- purrr::map(
         wells,
         function(well) {
             .runFitCurve(
@@ -73,19 +73,6 @@ computeModels <- function(se, assay_name, linear_threshold = 400) {
         }
     )
     
-    metadata(se)[[paste0(assay_name, "_models")]] <- models
-    
-    # build matrix of fluorescence values predicted by the models;
-    # save as an assay matrix in the SummarizedExperiment
-    fluo_pred_mat <- models |> vapply(
-        FUN = function(model) { as.numeric(model$y_pred) },
-        FUN.VALUE = numeric(length(cycles))
-    )
-    
-    dimnames(fluo_pred_mat) <- list(rownames(se), wells)
-    
-    assays(se)[[paste0(assay_name, "_pred")]] <- fluo_pred_mat
-    
     return(se)
 }
 
@@ -94,7 +81,7 @@ computeModels <- function(se, assay_name, linear_threshold = 400) {
 #' A thin R wrapper for the python3 function fit_curve(), which attempts to 
 #' optimize 5-parameter logistic regressions to PCR fluorescence curves. 
 #'
-#' @param data A `data.frame` with the following required columns: 
+#' @param pcr_data A `data.frame` with the following required columns: 
 #' \describe{
 #'     \item{cycle}{PCR cycle number}
 #'     \item{fluo}{observed fluorescence}
@@ -102,18 +89,21 @@ computeModels <- function(se, assay_name, linear_threshold = 400) {
 #' @param linear_threshold numeric value specifying the minimum overall 
 #' change-in-fluorescence over the PCR reaction required for the optimizer 
 #' to attempt fitting a logistic model 
+#' 
+#' @import basilisk
+#' @import reticulate
 #'
 #' @returns The model as a nested list
-.runFitCurve <- function(data, linear_threshold) {
-    basilisk::basiliskRun(
+.runFitCurve <- function(pcr_data, linear_threshold) {
+    basiliskRun(
         env = OAtools_env,
         fun = function() {
-            reticulate::source_python(system.file(
+            source_python(system.file(
                 "python", 
                 "fit_curve.py", 
                 package = "OAtools"
             ))
-            return(fit_curve(data, linear_threshold))
+            return(fit_curve(pcr_data, linear_threshold))
         }
     )
 }

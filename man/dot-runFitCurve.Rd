@@ -4,10 +4,10 @@
 \alias{.runFitCurve}
 \title{Run the fit_curve() function}
 \usage{
-.runFitCurve(data, linear_threshold)
+.runFitCurve(pcr_data, linear_threshold)
 }
 \arguments{
-\item{data}{A \code{data.frame} with the following required columns:
+\item{pcr_data}{A \code{data.frame} with the following required columns:
 \describe{
 \item{cycle}{PCR cycle number}
 \item{fluo}{observed fluorescence}

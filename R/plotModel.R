@@ -46,14 +46,13 @@ plotModel <- function(se, well_id, assay_name,
     sample <- col_data[well_id, "sample_name"]
     gene   <- col_data[well_id, "target_name"]
     
-    
     # pull fluorescence data and cycle numbers from assay matrix
     cycles <- rowData(se)$cycle
     
     well_data <- DataFrame(
         cycle = cycles,
         fluo = assays(se)[[assay_name]][, well_id],
-        fluo_pred = assays(se)[[paste0(assay_name, "_pred")]][, well_id]
+        fluo_pred = model$y_pred
     )
     
     # build model plot with predicted vs. observed fluorescence values
