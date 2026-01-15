@@ -67,3 +67,6 @@ inst/doc
 *.html
 /doc/
 /Meta/
+
+# pycache
+inst/python/__pycache__/*
