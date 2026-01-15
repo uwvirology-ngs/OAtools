@@ -11,25 +11,10 @@ import pandas as pd
 from scipy.optimize import curve_fit
 from typing import Union, Any
 
+from linear_regression import *
+from five_param_logistic_regression import *
+
 # ---------------------------------------------------- Regression Helpers --------------------------------------------------
-
-# linear regression equation
-def linear_regression(x: Union[np.ndarray, float], M: float, C: float) -> float:
-    return M * x + C
-
-# 5-parameter logistic regression equation
-def logistic_regression(x: Union[np.ndarray, float], A: float, D: float, C: float, B: float, S: float) -> float:
-    return A + (D - A) / ((1 + np.exp(B * (C - x))) ** S)
-
-# computes and returns the cycle point at which fluorescence crosses the midpoint between its overall minima and maxima
-def midpoint_5pl(C: float, B: float, S: float) -> float:
-    return C - (np.log(2**(1 / S) - 1)) / B
-
-# computes and returns the derivative of the 5pl regression equation with respect to x, the cycle number
-def derivative_5pl(x: float, A: float, D: float, C: float, B: float, S: float) -> float:
-    z: float = 1 + np.exp(B * (C - x))                                                    # inner term
-    derivative: float = (D - A) * S * z**(-S - 1) * B * np.exp(B * (C - x))               # overall derivative
-    return derivative
 
 # computes and returns the r_squared value between predicted and observed fluorescence values
 def compute_r_squared(y_data: np.ndarray, y_pred: np.ndarray) -> float:
@@ -68,19 +53,19 @@ def fit_curve(data: pd.DataFrame, linear_threshold: float) -> dict[str, Any]:
       raise ValueError("duplicate values present in cycle column. likely cause is several runs of data passed to fit_curve function.")
     
     # convert run data to numpy array
-    x_data: np.ndarray = data['cycle'].to_numpy()                   # load fluo/cycle data as numpy arrays
+    x_data: np.ndarray = data['cycle'].to_numpy()                       # load fluo/cycle data as numpy arrays
     y_data: np.ndarray = data['fluo'].to_numpy()
-    delta: float = np.mean(y_data[-3:]) - np.mean(y_data[:3])       # compute overall change in fluorescence as difference from final three to first three cycles
+    delta: float = float(np.mean(y_data[-3:]) - np.mean(y_data[:3]))    # compute overall change in fluorescence as difference from final three to first three cycles
     
     # engine for fitting 5pl equation
     def fit_5pl() -> tuple[np.ndarray, np.ndarray, np.ndarray]:
-        initial_guess: list = [7000, 14000, 20, 0.1, 1.0]           # initial guess for parameters to speed along optimizer
-        bounds: tuple[list[float], list[float]] = (                 # bounds for model parameters to guard against overflow
-          [0, 0, 1, -10, 0.1],
-          [20000, 20000, 40, 10, 10]
+        initial_guess: list = [7000, 14000, 0.1, 20, 1.0]               # initial guess for parameters to speed along optimizer
+        bounds: tuple[list[float], list[float]] = (                     # bounds for model parameters to guard against overflow
+          [0, 0, -10, 1, 0.1],
+          [20000, 20000, 10, 40, 10]
         )
-        params, cov = curve_fit(logistic_regression, x_data, y_data, p0 = initial_guess, bounds = bounds)
-        y_pred: np.ndarray = logistic_regression(x_data, *params)
+        params, cov = curve_fit(five_param_logistic_regression, x_data, y_data, p0 = initial_guess, bounds = bounds)
+        y_pred: np.ndarray = five_param_logistic_regression(x_data, *params)
         return params, cov, y_pred 
 
     # engine for fitting linear equation
@@ -103,11 +88,11 @@ def fit_curve(data: pd.DataFrame, linear_threshold: float) -> dict[str, Any]:
     
     # save model features
     if regression_type == "5pl":  
-        A, D, C, B, S = params
+        A, D, B, C, S = params
         coefficients: dict[str, float] = {"A": A, "D": D, "B": B, "C": C, "S": S}
-        x_mid: float = midpoint_5pl(C, B, S)
-        y_mid: float = logistic_regression(x_mid, A, D, C, B, S)
-        slope: float = derivative_5pl(x_mid, A, D, C, B, S)
+        x_mid: float = midpoint_5pl(B, C, S)
+        y_mid: float = five_param_logistic_regression(x_mid, A, D, B, C, S)
+        slope: float = derivative_5pl(x_mid, A, D, B, C, S)
     else:      
         M, C_ = params
         coefficients: dict[str, float] = {"M": M, "C": C_}
