@@ -9,7 +9,7 @@ found here powers the run_fit_curve() R function of the package.
 import numpy as np
 import pandas as pd
 from scipy.optimize import curve_fit
-from typing import Union, Any
+from typing import Any
 
 from linear_regression import *
 from five_param_logistic_regression import *
@@ -59,7 +59,7 @@ def fit_curve(data: pd.DataFrame, linear_threshold: float) -> dict[str, Any]:
     
     # engine for fitting 5pl equation
     def fit_5pl() -> tuple[np.ndarray, np.ndarray, np.ndarray]:
-        initial_guess: list = [7000, 14000, 0.1, 20, 1.0]               # initial guess for parameters to speed along optimizer
+        initial_guess: list[float] = [7000, 14000, 0.1, 20, 1.0]               # initial guess for parameters to speed along optimizer
         bounds: tuple[list[float], list[float]] = (                     # bounds for model parameters to guard against overflow
           [0, 0, -10, 1, 0.1],
           [20000, 20000, 10, 40, 10]
@@ -76,14 +76,14 @@ def fit_curve(data: pd.DataFrame, linear_threshold: float) -> dict[str, Any]:
     
     # select model for optimization
     if delta < linear_threshold:                                  # if overall change in fluorescence is lesser than the threshold, default to a linear model
-        params, cov, y_pred = fit_linear()
+        params, _cov, y_pred = fit_linear()
         regression_type: str = "lin"
     else:                                                           # otherwise, attempt to fit a logistic model
         try:
-          params, cov, y_pred = fit_5pl()
+          params, _cov, y_pred = fit_5pl()
           regression_type: str = "5pl"
         except RuntimeError:                                        # if the optimizer fails, fall back to a linear model
-          params, cov, y_pred = fit_linear()
+          params, _cov, y_pred = fit_linear()
           regression_type: str = "lin"
     
     # save model features
