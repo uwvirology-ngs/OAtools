@@ -1,6 +1,6 @@
 Package: OAtools
 Title: Analysis of OpenArray qPCR Data
-Version: 0.99.4
+Version: 0.99.5
 Description: Provides an automated pipeline to analyze gene expression 
     experiments on the OpenArray real-time PCR platform. OAtools fits
     logistic regressions to fluorescence curves to distinguish between 
