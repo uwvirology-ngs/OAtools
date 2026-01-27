@@ -35,8 +35,8 @@ seToQPCRBatch <- function(se) {
             .groups = "drop"
         ) |> 
         tidyr::pivot_wider(
-            names_from = "sample_name",
-            values_from = "cq"
+            names_from = .data$sample_name,
+            values_from = .data$cq
         ) |> 
         tibble::column_to_rownames("target_name") |> 
         as.matrix()
