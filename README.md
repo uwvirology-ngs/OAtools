@@ -66,10 +66,7 @@ path = system.file(
 )
 
 # transform the run data into a SummarizedExperiment
-se <- excelToSE(
-    path = path, 
-    num_results = 96
-)
+se <- excelToSE(excel_path = path)
 ```
 
 ### Analyzing PCR with logistic regressions
@@ -82,7 +79,7 @@ key defines thresholds that separate curves into positive and negative results.
 # optimize model curves to each PCR reaction
 se <- computeModels(
     se = se,
-    linear_threshold = 500
+    assay_name = "fluo_reporter"
 )
 
 # save filepath to assay target key
@@ -106,10 +103,7 @@ of the experiment.
 
 ```r
 # generate a .html report from the run data
-generateReport(
-    se = se,    
-    path = "."
-)
+generateReport(se = se)
 ```
 
 ## Interoperability
