@@ -12,7 +12,7 @@ test_that("an HTML file is succesfully generated", {
     expect_true(file.exists(file.path(path, "report.html")))
 })
 
-test_that("an error is thrown when kableExtra is not installed", {
+test_that("an error is thrown when kableExtra and DT are not installed", {
     path <- tempdir()
     
     local_mocked_bindings(
