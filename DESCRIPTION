@@ -1,11 +1,11 @@
 Package: OAtools
-Title: Analysis of OpenArray qPCR Data
-Version: 0.99.6
-Description: Provides an automated pipeline to analyze gene expression 
+Title: Analysis of OpenArray PCR Data
+Version: 0.99.7
+Description: Provides a suite of R functions to analyze gene expression 
     experiments on the OpenArray real-time PCR platform. OAtools fits
     logistic regressions to fluorescence curves to distinguish between 
     real amplification and false positives. OAtools supports data import, 
-    analysis, and visualization through plots and a dynamic .html report.
+    analysis, and visualization through plots and a dynamic HTML report.
 Authors@R: 
     person("Aidan", "Shea", 
     email = "aidantshea@gmail.com", 
@@ -14,7 +14,7 @@ Authors@R:
 License: GPL (>= 3)
 LazyData: FALSE
 Depends: 
-    R (>= 4.5)
+    R (>= 4.6)
 Imports: 
     basilisk (>= 1.20.0),
     Biobase (>= 2.70.0),
@@ -39,7 +39,7 @@ Suggests:
     kableExtra (>= 1.4.0),
     NormqPCR (>= 1.56.0),
     BiocManager (>= 1.30.27)
-biocViews: qPCR, GeneExpression, Regression
+biocViews: qPCR, GeneExpression, DataImport, Regression
 BugReports: https://github.com/uwvirology-ngs/OAtools/issues
 URL: https://github.com/uwvirology-ngs/OAtools
 BiocType: Software

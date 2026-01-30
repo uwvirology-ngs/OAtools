@@ -108,23 +108,27 @@ if (!require("dplyr", quietly = TRUE)) {
 1.) The first method is to simply carry over the relative threshold analysis 
 native to the QuantStudio 12K Flex Software.
 
-2.) The second method is to fit a logistic model to the fluroescence vs. cycle 
-data for each individual well, then determine PCR results based on the model 
-parameters.
+2.) The second method is to fit model curves to the fluorescence vs. cycle 
+data for each well individually, then determine PCR results which depend on 
+features of the curve.
 
 ## Import to SummarizedExperiment
 
-To start, we specify the filepath to some example OpenArray qPCR run data, 
+To start, we specify the file path to some example OpenArray qPCR run data, 
 which is included with the package. This data is a sample from a gene expression
 experiment our lab, the University of Washington Virology Lab, ran on human 
 nasal swabs to screen for respiratory pathogens. 
 
-With the filepath specified, we use the `excelToSE()` 
-function to read the .xlsx file containing the run data and load it into a 
+For detailed documentation on the example data used in this vignette, run 
+`?oa_gene_expression_1` in the R console with OAtools attached.
+
+With the file path specified, we use the `excelToSE()` 
+function to read the Excel file containing the run data and load it into a 
 SummarizedExperiment object. SummarizedExperiment is an S4 Class from 
-Bioconductor used to stored matrix-like assay data and associated metadata. Note
-that we specify the number of rows to read from the 'Results' tab of the .xlsx 
-file with the num_results parameter. 
+Bioconductor used to store matrix-like assay data and associated metadata. 
+This function takes optional parameters for the number of header rows, which 
+store run metadata, and the number of rows to skip before reading assay data, 
+though the defaults will work in this case.
 
 ```{r data_import}
 # save filepath to example OpenArray gene expression run data
@@ -140,20 +144,26 @@ se <- excelToSE(excel_path = path)
 
 ## Experiment Structure
 
-### Assay Matrix
+### Assay Matrices
 
 With the data loaded into a SummarizedExperiment container, we can review its 
-structure. The assay matrix stores the observed fluorescence values measured
-by the QuantStudio 12K Flex thermocycler for every cycle within each 
-though-hole on the OpenArray plate. We may access the assay matrix from 
-our SummarizedExperiment object by invoking `assay(se)` and coercing 
-the assay matrix into a dataframe with `as.data.frame()`.
+structure. The assay matrices store observed fluorescence values measured
+by the QuantStudio 12K Flex thermocycler by cycle number, where each column 
+stores PCR reactions from through-holes on the OpenArray plate separately. 
 
-If we want to be more explicit, we can also call `assays(se)$fluo_reporter` 
-to retrieve the observed fluorescence values, which is useful when we add more 
-assay matrices downstream. Here we display a slice of the fluorescence data 
-from cycles 11 to 20; notice that the rows represent cycle number and the 
-columns represent individual through-holes on the OpenArray plate. 
+The `excelToSE()` function generates two assay matrices by default, which are
+`fluo_normalized` and `fluo_reporter`. The former refers to baseline-corrected,
+normalized fluorescence imported from the 'Amplification Data' tab, while the 
+latter refers to the spectral contribution of the reporter dye imported from
+the 'Multicomponent Data' tab. We may access the assay matrix corresponding to
+the multicomponent data, for example, by invoking `assays(se)$fluo_reporter` 
+in the R console, then coercing into a data frame with `as.data.frame()` as 
+shown below.
+
+Here we display a slice of the multicomponent fluorescence data from cycles 
+11 to 20, where the exponential phase of amplification tends to occur. The rows
+of each assay matrix denote the cycle number and the columns denote the 
+individual PCR reactions on the OpenArray plate. 
 
 ```{r structure-assay_matrix}
 # retrieve the assay matrix and display a subset as a data frame
@@ -164,17 +174,15 @@ as.data.frame(assays(se)$fluo_reporter) |>
 
 ### Coldata
 
-Other than raw fluorescence values, data associated with each PCR reaction 
-on the OpenArray plate are stored in the colData of the SummarizedExperiment. 
-We can access the colData with `as.data.frame(colData(se))`, again coercing 
-to a data frame to display. Information stored here includes PCR results in the
-form of a Crt and an Amp Score, metadata such as reporter dye and quencher, 
-and QC metrics like Amp Score and Cq Conf. 
+Well number, sample, gene, quality control metrics, and various metadata 
+associated with each PCR reaction are stored as a DataFrame accessible with
+`colData(se)`. The Crt (relative threshold value) and amplification status 
+determined by QuantStudio 12K Flex Software are saved here as well. The 
+relative threshold value is analogous to a Ct value reported in a typical qPCR
+assay. 
 
-In particular, the Crt is a relative threshold value, which is anologous to a 
-Ct value in a typical qPCR assay. The Amp Score is the final result assigned 
-to the well automatically by QuantStudio 12K Flex Software. Here we display
-a selection of the colData associated with the first 10 wells. 
+Here we display a subset of the column annotation DataFrame associated with 
+the first 10 wells. 
 
 ```{r structure-coldata}
 # retrieve the coldata and render a subset as a data frame
@@ -187,14 +195,27 @@ as.data.frame(colData(se)) |>
 
 ### Rowdata
 
-By contrast, the rowData stores only the cycle numbers, which is less 
-interesting by itself. 
+By contrast, the row annotation DataFrame stores only the cycle numbers, 
+which is less interesting by itself. 
 
 ```{r structure-rowdata}
 # retrieve the rowdata and render a subset as a data frame
 as.data.frame(rowData(se)) |> 
     dplyr::slice(1:10)
 ```
+
+### Metadata
+
+Finally, the file path of the imported data and run-level metadata are stored 
+in a list accessible with `metadata(se)`. Here we display the run information. 
+
+```{r structure-metadata}
+# render the experiment level metadata
+metadata(se)$run_info
+```
+
+Model data generated in downstream curve-fitting steps is saved to the 
+experiment metadata as well.
 
 ## Reporting Results
 
@@ -214,24 +235,33 @@ if (!require("kableExtra", quietly = TRUE)) {
 ```
 
 The following code block generates the PCR report assuming that data has been
-loaded in using `excelToSE()`. Note that it does not 
-automatically execute when constructing this vignette as the function calls 
-code to save the report directly to the user's machine. 
+loaded in using `excelToSE()`. Note that this code chunk is not wired to 
+execute when constructing the vignette as `generateReport()` calls code to 
+save the report directly to the user's machine, though it defaults to a 
+temporary file.
 
 ```{r reporting-results, eval=FALSE}
-# generate a .html report from the run data
+# generate an HTML report from the run data
 generateReport(se = se)
 ```
 
+At present, this report pulls from the analysis provided by the QuantStudio 12K
+Flex software, though an option to build the report from data generated by the
+curve-fitting method is planned for future development.
+
 ## Analysis by Logistic Regression
 
-In alignment with open science and reproducible data analyses, OAtools supports 
-an alternative method to derive sample results by fitting logistic models to 
-the fluorescence curves of each PCR reaction on the OpenArray plate. The 
-parameters of the model curve can be used to determine the result of each PCR 
-reaction. In particular, OAtools calls an algorithm from SciPy to fit a 
-5-parameter logistic regression to each fluorescence curve; we chose the 5PL 
-model for its ability to handle asymmetries common to PCR curves. 
+The second method of data analysis, as mentioned in the overview, is to fit 
+model curves to each PCR reaction curve individually, then use computed 
+features to differentiate positive and negative PCR results. In particular, 
+the `computeModels()` package function calls an algorithm from SciPy and 
+attempts to fit 5-parameter logistic regressions to the fluorescence curves. 
+The 5PL model is implemented for its favorable ability to handle asymmetries 
+common to amplification curves. 
+
+This approach has the advantages of transparency and reproducibility, 
+circumventing the need to rely on propriety algorithms to interpret PCR
+results.
 
 ### Data Import
 
@@ -256,58 +286,59 @@ se <- excelToSE(excel_path = path)
 
 ### Optimizing Models to PCR Curves
 
-The next step is to run the optimizer and fit a 5PL model curve to each PCR 
-reaction on the OpenArray plate. OAtools exports the `computeModels()`
-function, which iterates over experiment and optimizes such a model to each 
-fluorescence curve. The function then computes features of the model from the 
-parameters of best fit and appends them to the metadata of the 
-SummarizedExperiment. 
+Next, we run the optimizer and attempt to fit a 5PL model curve to each PCR 
+reaction on the OpenArray plate. As mentioned above, OAtools exports the 
+`computeModels()` function, which iterates over the experiment and does
+this programmatically. `computeModels()` then saves the parameters of each 
+model curve, along with features computed from them, as a list in the 
+experiment metadata. If the `fluo_reporter` assay matrix is used, for example, 
+the models would be accessible with `metadata(se)$fluo_reporter_models`. 
 
-Under the hood, `computeModels()` invokes the `runFitCurve`()` function, 
-which is an R wrapper around the internal `fit_curve()` function implemented in 
-python3. `fit_curve()` runs the optimizer and returns the model when provided 
-fluorescence vs. cycle data as a data frame for a single PCR reaction.
+Under the hood, `computeModels()` invokes a thin R wrapper, `runFitCurve()`, 
+around the internal `fit_curve()` function implemented in python3. 
+`computeModels()` handles the logic for iterating over the OpenArray plate, 
+while `fit_curve()` interfaces with SciPy and actually runs the optimization, 
+returning a model curve when provided PCR data (observed fluorescence vs. 
+cycle number) for a single reaction. 
 
-Among the features appended by `computeModels()` are the slope at the 
-midpoint of the reaction and the overall change in fluorescence, both of which 
-are relevant indicators of the PCR result. Note that we include a
-linear_threshold parameter when calling the function. PCR curves with overall 
-change in fluorescence below the linear_threshold parameter are marked as 
-negative and fit to a linear model instead. 
-
-The rationale is that PCR curves with very low overall change in fluorescence 
-are trivially negative, but take significantly longer for the optimizer to 
-handle when attempting to fit a model. Thus, it saves on compute time to 
-automatically filter out such curves. 
+A linear_threshold parameter is optionally provided when calling 
+`computeModels()`. PCR curves with overall change in fluorescence below this
+threshold are marked as negative and fit to linear models instead. The 
+rationale is that such PCR curves are trivially negative for the amplicon of 
+interest, but add a great deal of compute time to the optimization process and 
+are better filtered out. 
 
 ```{r regression-fit_curve}
-# optimize model curves to each PCR reaction append model parameters and
-# features to the SummarizedExperiment
+# optimize model curves to each PCR reaction
 se <- computeModels(
     se = se,
     assay_name = "fluo_reporter"
 )
+
+# display an example model, fit to the PCR reaction in well 2345
+metadata(se)$fluo_reporter_models$well_2345
 ```
 
 ### Deriving PCR Results from the Model
 
-The next step is to use the model parameters and features we've retrieved to 
-derive PCR results. We can invoke the `determinePCRResults()` function on our
-SummarizedExperiment to do this programmatically. `determinePCRResults()` 
-accepts as input the SummarizedExperiment and an excel key (.xlsx) associating
-each assay target with threshold values for relevant model features. In 
-particular, the excel must specify values for cycle threshold, slope at the 
-reaction midpoint, and overall change-in-fluorescence.
+Finally, we can leverage the model data we've generated to derive PCR results. 
+OAtools exports the `determinePCRResults()` function, which we can invoke on
+our SummarizedExperiment to generate such results. `determinePCRResults()` 
+requires as input an Excel key. This key associates each gene target with 
+threshold values for model features used to separate positive and negative 
+PCR results. In particular, values are specified for the cycle threshold, 
+midpoint slope, and overall change-in-fluorescence. 
 
-For more details on the key, run `?OAtools::target_threshold_key` in the R 
-console. 
+Different thresholds may be specified for distinct target genes to account for 
+differences in primer efficiency across assays on the same OpenArray plate.
 
-The outcome of running the `determinePCRResults()` function is to add columns 
-indicating whether the PCR reaction clears each threshold, then a column 
-indicating the final PCR result. The rationale for allowing different thresholds
-for each assay on the OpenArray plate is that fluorescence curve shape may vary 
-by assay due to differences in primer efficiency. As a highly multiplex 
-platform, numerous assays are typically present on the same OpenArray plate. 
+For documentation and details on the key, run `?OAtools::target_threshold_key` 
+in the R console. 
+
+`determinePCRResults()` computes PASS/FAIL values for the cycle threshold, 
+midpoint slope, and change-in-fluorescence, marking PCR reactions which pass
+on all accounts as positive and all others as negative. These results are saved
+to the column annotation DataFrame.
 
 ```{r regression-derive_results}
 # save filepath to target-threshold-key

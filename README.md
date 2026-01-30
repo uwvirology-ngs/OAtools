@@ -3,10 +3,10 @@
 <!-- badges: start -->
 
 [![](https://img.shields.io/badge/lifecycle-experimental-orange.svg)](https://lifecycle.r-lib.org/articles/stages.html#experimental)
-[![License: MIT](https://img.shields.io/badge/license-MIT-blue.svg)](https://cran.r-project.org/web/licenses/MIT)
+[![License: GPL3](https://img.shields.io/badge/license-GPL_3-blue.svg)](https://cran.r-project.org/web/licenses/GPL-3)
 [![](https://img.shields.io/github/last-commit/uwvirology-ngs/OAtools.svg)](https://github.com/uwvirology-ngs/OAtools/commits/main)
-[![](https://img.shields.io/badge/devel%20version-0.99.0-purple.svg)](https://github.com/uwvirology-ngs/OAtools)
-![](https://img.shields.io/badge/R->=%204.5-lightblue.svg)
+[![](https://img.shields.io/badge/devel%20version-0.99.7-purple.svg)](https://github.com/uwvirology-ngs/OAtools)
+![](https://img.shields.io/badge/R->=%204.6-lightblue.svg)
 
 <!-- badges: end -->
 
