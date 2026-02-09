@@ -1,7 +1,9 @@
 ---
 title: "OpenArray PCR Report"
 date: "`r Sys.Date()`"
-output: html_document
+output:
+    html_document:
+        self_contained: true
 params:
     data_path: NULL
     model_results: NULL
