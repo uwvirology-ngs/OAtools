@@ -7,7 +7,7 @@
 .serverDataImport(id)
 }
 \arguments{
-\item{id}{id identifier unique to \verb{Data Import} page}
+\item{id}{identifier unique to \verb{Data Import} page}
 }
 \value{
 The \verb{Data Import} server component

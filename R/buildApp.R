@@ -32,7 +32,8 @@ buildApp <- function() {
     navbarPage(
         "OATools",
         .uiDataImport("dataImport"),
-        .uiGraphics("graphics")
+        .uiGraphics("graphics"),
+        .uiReporting("reporting")
     )
 }
 
@@ -51,4 +52,5 @@ buildApp <- function() {
 .buildServer <- function(input, output, session) {
     se <- .serverDataImport("dataImport")
     .serverGraphics("graphics", se)
+    .serverReporting("reporting", se)
 }
