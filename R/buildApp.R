@@ -31,7 +31,8 @@ buildApp <- function() {
 .buildUI <- function() {
     navbarPage(
         "OATools",
-        .uiDataImport("dataImport")
+        .uiDataImport("dataImport"),
+        .uiGraphics("graphics")
     )
 }
 
@@ -49,4 +50,5 @@ buildApp <- function() {
 #' @import shiny
 .buildServer <- function(input, output, session) {
     se <- .serverDataImport("dataImport")
+    .serverGraphics("graphics", se)
 }
