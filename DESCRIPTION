@@ -1,6 +1,6 @@
 Package: OAtools
 Title: Analysis of OpenArray PCR Data
-Version: 0.99.10
+Version: 0.99.11
 Description: Provides a suite of R functions to analyze gene expression 
     experiments on the OpenArray real-time PCR platform. OAtools fits
     logistic regressions to fluorescence curves to distinguish between 

@@ -2,7 +2,7 @@
 % Please edit documentation in R/determinePCRResults.R
 \name{determinePCRResults}
 \alias{determinePCRResults}
-\title{Determine PCR results from features of multicomponent fluorescence curves}
+\title{Determine PCR results from fit curves}
 \usage{
 determinePCRResults(se, key_path)
 }
@@ -15,18 +15,18 @@ determinePCRResults(se, key_path)
 a SummarizedExperiment
 }
 \description{
-Assigns positive or negative PCR results to every PCR reaction depending on
-the equation of the model curve optimized to the fluorescence curve. In
-particular, the reporter dye fluorescence without normalization is used to
+Assigns positive or negative PCR results to each reaction depending on the
+equation of the model optimized to observed multicomponent fluorescence
+values. The reporter dye fluorescence without normalization is used to
 distinguish between real amplification and false positives.
 }
 \details{
-The target-threshold key is an Excel file which stores threshold values
-used to separate PCR curves. These thresholds are defined across metrics
-such as cycle threshold, overall change-in-fluorescence, and slope of the
-fluorescence curve during the exponential phase. The thresholds are
-separately defined for each gene to accommodate inherent differences in
-assays.
+The key is an Excel file storing values used by \code{determinePCRResults()} to
+categorize PCR curves as \code{positive} or \code{negative}. In the key, each gene is
+associated with threshold values for Crt, change-in-fluorescence, and slope
+at the reaction midpoint.
+
+For more specifics, input \code{?target_threshold_key} into the R console.
 }
 \examples{
 data(example_se)
