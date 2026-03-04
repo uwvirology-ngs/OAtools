@@ -1,8 +1,10 @@
-options(shiny.maxRequestSize = 30 * 1024^2)
-
 #' A Shiny App for OAtools
 #' 
 #' Builds a Shiny application for interactively running OAtools
+#' 
+#' @details
+#' Temporarily changes the maximum file size for upload to 30MB,
+#' restoring the original setting upon application exit.
 #'
 #' @returns A Shiny web application
 #' 
@@ -17,7 +19,19 @@ buildApp <- function() {
     server <- function(input, output, session) {
         .buildServer(input, output, session)
     }
-    app <- shinyApp(ui = ui, server = server)
+    
+    original_setting <- getOption("shiny.maxRequestSize")
+    
+    app <- shinyApp(
+        ui = ui, 
+        server = server,
+        onStart = function() {
+            options(shiny.maxRequestSize = 30 * 1024^2)
+            shiny::onStop(function() {
+                options(shiny.maxRequestSize = original_setting)
+            })
+        }
+    )
 }
 
 #' User Interface

@@ -12,6 +12,10 @@ A Shiny web application
 \description{
 Builds a Shiny application for interactively running OAtools
 }
+\details{
+Temporarily changes the maximum file size for upload to 30MB,
+restoring the original setting upon application exit.
+}
 \examples{
 app <- buildApp()
 }
