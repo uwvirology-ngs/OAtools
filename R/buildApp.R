@@ -44,7 +44,7 @@ buildApp <- function() {
 #' @import shiny
 .buildUI <- function() {
     navbarPage(
-        "OATools",
+        paste0("OAtools ", utils::packageVersion("OAtools")),
         .uiDataImport("dataImport"),
         .uiFitCurves("fitCurves"),
         .uiGraphics("graphics"),
