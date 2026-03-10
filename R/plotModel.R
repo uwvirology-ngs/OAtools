@@ -107,7 +107,7 @@ plotModel <- function(se, well_id, assay_name,
         labs(
             x = "Cycle",
             y = "Fluorescence",
-            title = "Model Prediction vs. Observed Fluorescence",
+            title = "Predicted vs. Observed Fluorescence",
             subtitle = paste0(sample, "        ", gene, "        ", well_id)
         ) +
         theme_minimal(base_size = 12) +
