@@ -44,6 +44,12 @@ determinePCRResults <- function(se, key_path) {
     models <- metadata(se)$fluo_reporter_models
     
     data <- as.data.frame(colData(se)) |>
+        dplyr::mutate(
+            run_date = metadata(se)$run_info |> 
+                dplyr::filter(.data$Field == "Experiment Run Start Time") |> 
+                dplyr::pull("Data") |> 
+                strptime(format = "%m-%d-%Y") |> as.Date()
+        ) |> 
         dplyr::mutate(regression_type = map_chr(
             paste0("well_", .data$well),
             function(well) { models[[well]]$regression_type }
